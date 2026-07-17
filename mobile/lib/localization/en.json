@@ -1,0 +1,62 @@
+{
+  "@@locale": "en",
+
+  "appName": "MyKirana",
+  "appTagline": "Your shop, in your pocket",
+
+  "commonNext": "Next",
+  "commonBack": "Back",
+  "commonCancel": "Cancel",
+  "commonSave": "Save",
+  "commonDone": "Done",
+  "commonRetry": "Try Again",
+  "commonEdit": "Edit",
+  "commonDelete": "Delete",
+  "commonConfirm": "Confirm",
+  "commonSubmit": "Submit",
+  "commonLoading": "Loading...",
+  "commonSeeAll": "See All",
+  "commonSearch": "Search",
+
+  "authWelcomeTitle": "Welcome to MyKirana",
+  "authWelcomeSubtitle": "Manage your shop or order from your favourite kirana — all in one app",
+  "authPhoneLabel": "Mobile Number",
+  "authPhoneHint": "Enter 10-digit mobile number",
+  "authPhoneError": "Please enter a valid 10-digit number",
+  "authSendOtp": "Send OTP",
+  "authTermsNotice": "By continuing, you agree to our Terms & Privacy Policy",
+
+  "authOtpTitle": "Verify Your Number",
+  "authOtpSubtitle": "We've sent a 6-digit code to",
+  "authOtpChangeNumber": "Change Number",
+  "authOtpResendIn": "Resend code in {seconds}s",
+  "authOtpResend": "Resend Code",
+  "authOtpVerify": "Verify & Continue",
+  "authOtpError": "Wrong code. Please try again",
+  "authOtpAutoRead": "Reading OTP automatically...",
+
+  "authRoleTitle": "How will you use MyKirana?",
+  "authRoleSubtitle": "Choose one to get started",
+  "authRoleOwnerTitle": "I run a shop",
+  "authRoleOwnerDesc": "Manage products, track udhari, receive orders",
+  "authRoleCustomerTitle": "I want to order",
+  "authRoleCustomerDesc": "Browse products, track udhari, order from your shop",
+  "authRoleNameLabel": "Your Name",
+  "authRoleNameHint": "Enter your full name",
+
+  "navHome": "Home",
+  "navUdhari": "Udhari",
+  "navOrders": "Orders",
+  "navProducts": "Products",
+  "navDashboard": "Dashboard",
+  "navProfile": "Profile",
+
+  "languageTitle": "Choose Language",
+  "languageEnglish": "English",
+  "languageHindi": "हिंदी",
+  "languageMarathi": "मराठी",
+
+  "errorGeneric": "Something went wrong. Please try again",
+  "errorNoInternet": "No internet connection",
+  "errorOffline": "You're offline. Changes will sync when you're back online"
+}
