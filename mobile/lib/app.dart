@@ -7,6 +7,8 @@ import 'providers/locale_provider.dart';
 import 'features/auth/screens/phone_input_screen.dart';
 import 'features/auth/screens/otp_verify_screen.dart';
 import 'features/auth/screens/role_select_screen.dart';
+import 'features/udhari/screens/udhari_customer_list_screen.dart';
+import 'features/udhari/screens/my_udhari_screen.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -46,35 +48,13 @@ class MyApp extends ConsumerWidget {
         '/': (context) => const PhoneInputScreen(),
         '/auth/otp': (context) => const OtpVerifyScreen(),
         '/auth/role': (context) => const RoleSelectScreen(),
-        '/owner/dashboard': (context) => const _PlaceholderHome(
-              label: 'Owner Dashboard — coming in Step 10',
-            ),
-        '/customer/home': (context) => const _PlaceholderHome(
-              label: 'Customer Browse Home — coming in Step 7',
-            ),
+        // Udhari core (Step 3) is now the owner/customer entry point.
+        // TODO: swap these for the real Owner Dashboard (Step 10) and
+        // Customer Browse Home (Step 7) once those are built — udhari
+        // remains reachable from within both as a nav destination.
+        '/owner/dashboard': (context) => const UdhariCustomerListScreen(),
+        '/customer/home': (context) => const MyUdhariScreen(),
       },
-    );
-  }
-}
-
-class _PlaceholderHome extends StatelessWidget {
-  const _PlaceholderHome({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-      ),
     );
   }
 }
