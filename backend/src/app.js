@@ -4,6 +4,8 @@ const helmet = require('helmet');
 
 const shopsRouter = require('./routes/shops');
 const udhariRouter = require('./routes/udhari');
+const usersRouter = require('./routes/users');
+const customerShopLinksRouter = require('./routes/customer_shop_links');
 
 const app = express();
 
@@ -17,6 +19,8 @@ app.get('/health', (req, res) => {
 
 app.use('/shops', shopsRouter);
 app.use('/udhari', udhariRouter);
+app.use('/users', usersRouter);
+app.use('/customer-shop-links', customerShopLinksRouter);
 // TODO: mount /products, /orders, /categories routers as those
 // features are built (see project build order, Steps 5 and 8).
 
@@ -27,3 +31,4 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+

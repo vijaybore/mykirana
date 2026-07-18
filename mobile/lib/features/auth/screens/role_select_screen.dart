@@ -5,6 +5,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../providers/session_provider.dart' as session;
 
 class RoleSelectScreen extends ConsumerStatefulWidget {
   const RoleSelectScreen({super.key});
@@ -39,10 +40,16 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
 
     ref.listen(authProvider, (previous, next) {
       if (next.step == AuthStep.done && previous?.step != AuthStep.done) {
-        // Owner and customer land on different home shells.
+        // Persist who's logged in before deciding where to send them —
+        // shop setup/linking (and everything after) reads this.
+        ref.read(session.sessionProvider.notifier).setUser(
+              userId: next.userId!,
+              role: next.role!,
+            );
+
         final route = next.role == UserRole.owner
-            ? '/owner/dashboard'
-            : '/customer/home';
+            ? '/owner/shop-setup'
+            : '/customer/shop-link';
         Navigator.of(context).pushNamedAndRemoveUntil(route, (r) => false);
       }
     });
@@ -221,3 +228,4 @@ class _RoleCard extends StatelessWidget {
     );
   }
 }
+

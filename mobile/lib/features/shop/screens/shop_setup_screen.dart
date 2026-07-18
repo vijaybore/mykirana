@@ -1,0 +1,241 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_spacing.dart';
+import '../../../core/constants/app_text_styles.dart';
+import '../../../localization/app_localizations.dart';
+import '../../../providers/session_provider.dart';
+import '../providers/shop_provider.dart';
+
+/// Step 4 — owner fills in shop name/address/UPI, we create the shop
+/// and generate its code + QR, then the owner lands on this same
+/// screen's "created" state before continuing to the dashboard.
+class ShopSetupScreen extends ConsumerStatefulWidget {
+  const ShopSetupScreen({super.key});
+
+  @override
+  ConsumerState<ShopSetupScreen> createState() => _ShopSetupScreenState();
+}
+
+class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _upiController = TextEditingController();
+
+  Map<String, dynamic>? _createdShop;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _upiController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleCreate() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final session = ref.read(sessionProvider);
+    final ownerId = session.userId;
+    if (ownerId == null) return; // shouldn't happen post role-select
+
+    final shop = await ref.read(shopActionProvider.notifier).createShop(
+          ownerId: ownerId,
+          shopName: _nameController.text.trim(),
+          address: _addressController.text.trim(),
+          businessUpiId: _upiController.text.trim().isEmpty
+              ? null
+              : _upiController.text.trim(),
+        );
+
+    if (shop != null) {
+      ref.read(sessionProvider.notifier).setLinkedShop(
+            shopId: shop['id'] as String,
+            shopName: shop['shop_name'] as String,
+            shopCode: shop['shop_code'] as String,
+          );
+      setState(() => _createdShop = shop);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    final actionState = ref.watch(shopActionProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(t.t('shopSetupTitle'))),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.screenPadding),
+          child: _createdShop != null
+              ? _ShopCreatedView(
+                  shop: _createdShop!,
+                  onContinue: () => Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/owner/dashboard', (r) => false),
+                )
+              : Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        t.t('shopSetupSubtitle'),
+                        style: AppTextStyles.bodyMedium
+                            .copyWith(color: AppColors.textSecondary),
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+
+                      Text(t.t('shopNameLabel'), style: AppTextStyles.label),
+                      const SizedBox(height: AppSpacing.sm),
+                      TextFormField(
+                        controller: _nameController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                          hintText: t.t('shopNameHint'),
+                        ),
+                        validator: (v) => (v == null || v.trim().isEmpty)
+                            ? t.t('shopNameHint')
+                            : null,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+
+                      Text(t.t('shopAddressLabel'), style: AppTextStyles.label),
+                      const SizedBox(height: AppSpacing.sm),
+                      TextFormField(
+                        controller: _addressController,
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                          hintText: t.t('shopAddressHint'),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+
+                      Text(t.t('shopUpiLabel'), style: AppTextStyles.label),
+                      const SizedBox(height: AppSpacing.sm),
+                      TextFormField(
+                        controller: _upiController,
+                        decoration: InputDecoration(
+                          hintText: t.t('shopUpiHint'),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        t.t('shopUpiNote'),
+                        style: AppTextStyles.caption,
+                      ),
+
+                      if (actionState.errorMessage != null) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        Text(
+                          t.t(actionState.errorMessage!),
+                          style: AppTextStyles.bodySmall
+                              .copyWith(color: AppColors.danger),
+                        ),
+                      ],
+
+                      const Spacer(),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed:
+                              actionState.isLoading ? null : _handleCreate,
+                          child: actionState.isLoading
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(t.t('shopSetupCreate')),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                    ],
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShopCreatedView extends StatelessWidget {
+  const _ShopCreatedView({required this.shop, required this.onContinue});
+
+  final Map<String, dynamic> shop;
+  final VoidCallback onContinue;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    final shopCode = shop['shop_code'] as String;
+
+    return Column(
+      children: [
+        const SizedBox(height: AppSpacing.xl),
+        Container(
+          width: 72,
+          height: 72,
+          decoration: const BoxDecoration(
+            color: AppColors.udhariClearBg,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.check_rounded,
+              color: AppColors.udhariClear, size: 40),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        Text(t.t('shopCreatedTitle'), style: AppTextStyles.h2,
+            textAlign: TextAlign.center),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          t.t('shopCreatedSubtitle'),
+          textAlign: TextAlign.center,
+          style: AppTextStyles.bodyMedium
+              .copyWith(color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: AppSpacing.xl),
+
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            children: [
+              QrImageView(
+                data: shopCode,
+                size: 180,
+                backgroundColor: Colors.white,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(t.t('shopCodeLabel'), style: AppTextStyles.label),
+              const SizedBox(height: 4),
+              Text(
+                shopCode,
+                style: AppTextStyles.h1.copyWith(letterSpacing: 2),
+              ),
+            ],
+          ),
+        ),
+
+        const Spacer(),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: onContinue,
+            child: Text(t.t('shopContinue')),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+      ],
+    );
+  }
+}
+

@@ -45,6 +45,9 @@ dependencies:
   # Connectivity (for sync manager)
   connectivity_plus: ^6.1.0
 
+  # Local persistence (locale, role, linked-shop memory)
+  shared_preferences: ^2.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -2,6 +2,10 @@
 -- Matches the data model from project planning: users, shops, categories,
 -- products, customer-shop links, udhari transactions, and orders.
 
+-- gen_random_uuid() (used as the default for every id column below)
+-- comes from pgcrypto, not core Postgres — must be enabled first.
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE IF NOT EXISTS users (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   phone         VARCHAR(15) UNIQUE NOT NULL,
@@ -82,3 +86,4 @@ CREATE TABLE IF NOT EXISTS orders (
 CREATE INDEX IF NOT EXISTS idx_products_shop ON products(shop_id);
 CREATE INDEX IF NOT EXISTS idx_udhari_shop_customer ON udhari_transactions(shop_id, customer_id);
 CREATE INDEX IF NOT EXISTS idx_orders_shop_status ON orders(shop_id, status);
+

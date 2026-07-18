@@ -35,24 +35,31 @@ npm run dev
 
 ## Build Status
 - [x] Auth (phone + OTP), role selection — owner/customer
-- [x] Localization scaffolding (en / hi / mr) — 72 keys, full parity across all three
+- [x] Localization scaffolding (en / hi / mr) — 96 keys, full parity across all three
 - [x] Udhari core (add/view credit & payments) — offline-first, owner + customer views
-- [ ] Shop profile setup + QR/code generation
+- [x] Shop profile setup + QR/code generation (owner) — Step 4
+- [x] Customer shop-linking (scan/enter code) — Step 6
+- [x] Locale + session persistence — language, role, and linked shop survive app
+      restart / hot restart, so returning users skip straight back to their shop
 - [ ] Product management (categories, images, stock)
-- [ ] Customer shop-linking (scan/enter code)
 - [ ] Product browsing (category tabs + search)
 - [ ] Ordering flow (cash / UPI / udhari)
 - [ ] Order status tracking
 - [ ] Full offline sync (background push of pending_sync rows on reconnect)
 
 ### Known gaps to wire up next
-- `session_provider.dart` currently holds no real user/shop IDs — needs
-  connecting to Firebase Auth UID + a `POST /users` call once role
-  selection completes, and to the shop-linking screen for customers.
+- Phone OTP is still a mocked 1-second delay in `auth_provider.dart` —
+  needs real `FirebaseAuth.instance.verifyPhoneNumber(...)` once the
+  Firebase project is created (see the `TODO`s there).
 - `ApiService` base URL defaults to the Android emulator's localhost
-  alias (`10.0.2.2:4000`) — point it at your LAN IP or deployed backend
-  as needed.
+  alias (`10.0.2.2:4000`) — point it at your LAN IP for a real device,
+  or the deployed backend URL for staging/production.
 - Backend has no auth middleware yet — routes are open. Add Firebase
   Admin ID-token verification before this goes past the pilot.
+- Run `npm run migrate` in `/backend` (or re-run it) after pulling
+  these changes — the schema migration now also enables the
+  `pgcrypto` Postgres extension, which earlier UUID-generating
+  inserts silently depended on without declaring.
 
 See project planning docs for full requirement analysis, data model, and rollout plan.
+

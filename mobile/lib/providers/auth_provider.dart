@@ -1,8 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/api_service.dart';
 
 enum AuthStep { phoneInput, otpVerify, roleSelect, done }
 
 enum UserRole { owner, customer }
+
+extension UserRoleX on UserRole {
+  String get apiValue => this == UserRole.owner ? 'owner' : 'customer';
+
+  static UserRole? fromApi(String? value) {
+    if (value == 'owner') return UserRole.owner;
+    if (value == 'customer') return UserRole.customer;
+    return null;
+  }
+}
 
 class AuthState {
   const AuthState({
@@ -12,6 +23,7 @@ class AuthState {
     this.errorMessage,
     this.role,
     this.name,
+    this.userId,
     this.verificationId,
     this.resendCooldownSeconds = 0,
   });
@@ -22,6 +34,7 @@ class AuthState {
   final String? errorMessage;
   final UserRole? role;
   final String? name;
+  final String? userId;
   final String? verificationId;
   final int resendCooldownSeconds;
 
@@ -33,6 +46,7 @@ class AuthState {
     bool clearError = false,
     UserRole? role,
     String? name,
+    String? userId,
     String? verificationId,
     int? resendCooldownSeconds,
   }) {
@@ -43,6 +57,7 @@ class AuthState {
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       role: role ?? this.role,
       name: name ?? this.name,
+      userId: userId ?? this.userId,
       verificationId: verificationId ?? this.verificationId,
       resendCooldownSeconds:
           resendCooldownSeconds ?? this.resendCooldownSeconds,
@@ -55,7 +70,9 @@ class AuthState {
 /// into sendOtp() / verifyOtp() below — stubbed with a mock delay for now
 /// so the UI is fully testable before backend/Firebase project keys exist.
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(const AuthState());
+  AuthNotifier(this._api) : super(const AuthState());
+
+  final ApiService _api;
 
   Future<void> sendOtp(String phoneNumber) async {
     state = state.copyWith(
@@ -119,12 +136,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> selectRole(UserRole role, String name) async {
     state = state.copyWith(isLoading: true);
     try {
-      // TODO: POST /users { phone, role, name } to backend
-      await Future.delayed(const Duration(milliseconds: 600));
+      final user = await _api.upsertUser(
+        phone: state.phoneNumber,
+        role: role.apiValue,
+        name: name,
+      );
       state = state.copyWith(
         isLoading: false,
         role: role,
         name: name,
+        userId: user['id'] as String,
         step: AuthStep.done,
       );
     } catch (e) {
@@ -133,6 +154,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 }
 
+final _apiServiceProvider = Provider((ref) => ApiService());
+
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
-  (ref) => AuthNotifier(),
+  (ref) => AuthNotifier(ref.watch(_apiServiceProvider)),
 );
+

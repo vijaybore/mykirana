@@ -104,8 +104,8 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                   ],
                   decoration: InputDecoration(
                     hintText: t.t('authPhoneHint'),
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.symmetric(
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                         vertical: AppSpacing.md,
                       ),
@@ -168,3 +168,4 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
     );
   }
 }
+
