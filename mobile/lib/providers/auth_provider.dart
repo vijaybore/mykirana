@@ -1,6 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/api_service.dart';
 
+/// Maps a caught error to a localization key. Connection failures
+/// (timeout, unreachable host) get their own message so the person
+/// isn't left staring at a generic "something went wrong" when the
+/// real problem is "the backend isn't running / isn't reachable".
+String errorKeyFor(Object e) {
+  if (e is ApiException && e.isConnectionError) return 'errorNoServerConnection';
+  return 'errorGeneric';
+}
+
 enum AuthStep { phoneInput, otpVerify, roleSelect, done }
 
 enum UserRole { owner, customer }
@@ -149,7 +158,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         step: AuthStep.done,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: 'errorGeneric');
+      state = state.copyWith(isLoading: false, errorMessage: errorKeyFor(e));
     }
   }
 }

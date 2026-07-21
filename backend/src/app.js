@@ -6,6 +6,9 @@ const shopsRouter = require('./routes/shops');
 const udhariRouter = require('./routes/udhari');
 const usersRouter = require('./routes/users');
 const customerShopLinksRouter = require('./routes/customer_shop_links');
+const categoriesRouter = require('./routes/categories');
+const productsRouter = require('./routes/products');
+const ordersRouter = require('./routes/orders');
 
 const app = express();
 
@@ -21,8 +24,9 @@ app.use('/shops', shopsRouter);
 app.use('/udhari', udhariRouter);
 app.use('/users', usersRouter);
 app.use('/customer-shop-links', customerShopLinksRouter);
-// TODO: mount /products, /orders, /categories routers as those
-// features are built (see project build order, Steps 5 and 8).
+app.use('/categories', categoriesRouter);
+app.use('/products', productsRouter);
+app.use('/orders', ordersRouter);
 
 // Basic error handler — keeps stack traces out of API responses
 app.use((err, req, res, next) => {

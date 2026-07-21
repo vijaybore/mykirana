@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../services/api_service.dart';
+import '../../../providers/auth_provider.dart' show errorKeyFor;
 
 final _apiServiceProvider = Provider((ref) => ApiService());
 
@@ -43,7 +44,7 @@ class ShopActionNotifier extends StateNotifier<ShopActionState> {
       state = state.copyWith(isLoading: false);
       return shop;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: 'errorGeneric');
+      state = state.copyWith(isLoading: false, errorMessage: errorKeyFor(e));
       return null;
     }
   }
@@ -75,7 +76,7 @@ class ShopActionNotifier extends StateNotifier<ShopActionState> {
       state = state.copyWith(isLoading: false);
       return shop;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: 'errorGeneric');
+      state = state.copyWith(isLoading: false, errorMessage: errorKeyFor(e));
       return null;
     }
   }

@@ -57,6 +57,20 @@ router.post('/', async (req, res) => {
   res.status(201).json(created);
 });
 
+// GET /shops/by-owner/:ownerId — used at app bootstrap to check whether
+// this owner already has a shop (so shop-setup can be skipped on relaunch)
+router.get('/by-owner/:ownerId', async (req, res) => {
+  const result = await pool.query('SELECT * FROM shops WHERE owner_id = $1', [
+    req.params.ownerId,
+  ]);
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({ error: 'No shop found for this owner' });
+  }
+
+  res.json(result.rows[0]);
+});
+
 // GET /shops/by-code/:code — used by the customer shop-linking screen
 router.get('/by-code/:code', async (req, res) => {
   const { code } = req.params;

@@ -127,6 +127,15 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
 
                 const Spacer(),
 
+                if (authState.errorMessage != null) ...[
+                  Text(
+                    t.t(authState.errorMessage!),
+                    style: AppTextStyles.bodySmall
+                        .copyWith(color: AppColors.danger),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                ],
+
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

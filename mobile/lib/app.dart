@@ -11,8 +11,14 @@ import 'features/auth/screens/otp_verify_screen.dart';
 import 'features/auth/screens/role_select_screen.dart';
 import 'features/shop/screens/shop_setup_screen.dart';
 import 'features/shop/screens/shop_link_screen.dart';
-import 'features/udhari/screens/udhari_customer_list_screen.dart';
-import 'features/udhari/screens/my_udhari_screen.dart';
+import 'features/shop/screens/owner_dashboard_screen.dart';
+import 'features/shop/screens/customer_home_screen.dart';
+import 'features/shop/screens/shop_qr_screen.dart';
+import 'features/products/screens/owner_product_list_screen.dart';
+import 'features/products/screens/customer_browse_screen.dart';
+import 'features/cart/screens/cart_screen.dart';
+import 'features/orders/screens/owner_orders_screen.dart';
+import 'features/orders/screens/customer_orders_screen.dart';
 
 /// Figures out where a returning user should land, based on what was
 /// persisted locally at the last app close (see main.dart's bootstrap
@@ -78,12 +84,14 @@ class MyApp extends ConsumerWidget {
         '/auth/role': (context) => const RoleSelectScreen(),
         '/owner/shop-setup': (context) => const ShopSetupScreen(),
         '/customer/shop-link': (context) => const ShopLinkScreen(),
-        // Udhari core (Step 3) is the owner/customer home for now.
-        // TODO: swap these for the real Owner Dashboard (Step 10) and
-        // Customer Browse Home (Step 7) once those are built — udhari
-        // remains reachable from within both as a nav destination.
-        '/owner/dashboard': (context) => const UdhariCustomerListScreen(),
-        '/customer/home': (context) => const MyUdhariScreen(),
+        '/owner/dashboard': (context) => const OwnerDashboardScreen(),
+        '/owner/products': (context) => const OwnerProductListScreen(),
+        '/owner/orders': (context) => const OwnerOrdersScreen(),
+        '/owner/shop-qr': (context) => const ShopQrScreen(),
+        '/customer/home': (context) => const CustomerHomeScreen(),
+        '/customer/browse': (context) => const CustomerBrowseScreen(),
+        '/customer/cart': (context) => const CartScreen(),
+        '/customer/orders': (context) => const CustomerOrdersScreen(),
       },
     );
   }
