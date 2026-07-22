@@ -6,10 +6,14 @@ import 'providers/auth_provider.dart' show UserRoleX;
 import 'providers/locale_provider.dart';
 import 'providers/session_provider.dart';
 import 'services/local_prefs_service.dart';
+import 'firebase_options.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
 
   // Load whatever was persisted last time (language, role, linked
   // shop) *before* the first frame, so the app opens straight into

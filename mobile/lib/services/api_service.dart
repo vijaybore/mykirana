@@ -410,6 +410,18 @@ class ApiException implements Exception {
   /// the server" instead of a generic error.
   bool get isConnectionError => statusCode == 0;
 
+  /// Attempts to parse the response body as JSON and return the 'error' field.
+  /// Falls back to the raw body string if parsing fails.
+  String get message {
+    try {
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      if (json.containsKey('error')) {
+        return json['error'] as String;
+      }
+    } catch (_) {}
+    return body;
+  }
+
   @override
   String toString() => 'ApiException($statusCode): $body';
 }

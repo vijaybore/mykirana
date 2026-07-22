@@ -7,6 +7,7 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../providers/session_provider.dart';
 
 class OtpVerifyScreen extends ConsumerStatefulWidget {
   const OtpVerifyScreen({super.key});
@@ -81,7 +82,26 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
     ref.listen(authProvider, (previous, next) {
       if (next.step == AuthStep.roleSelect &&
           previous?.step != AuthStep.roleSelect) {
-        Navigator.of(context).pushNamed('/auth/role');
+        // If the user already chose 'Shop Owner' on the welcome screen,
+        // skip the role-select form and auto-complete their login as owner.
+        final sessionRole = ref.read(sessionProvider).role;
+        if (sessionRole == UserRole.owner) {
+          ref.read(authProvider.notifier).selectRole(UserRole.owner, 'Owner');
+        } else {
+          Navigator.of(context).pushNamed('/auth/role');
+        }
+      }
+      // When auto-login completes for owner, navigate to shop setup
+      if (next.step == AuthStep.done && previous?.step != AuthStep.done) {
+        final sessionRole = ref.read(sessionProvider).role;
+        if (sessionRole == UserRole.owner) {
+          ref.read(sessionProvider.notifier).setUser(
+                userId: next.userId!,
+                role: next.role!,
+              );
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/owner/shop-setup', (r) => false);
+        }
       }
       // Clear boxes on a fresh error so the user can retype immediately
       if (next.errorMessage != null && previous?.errorMessage == null) {

@@ -7,6 +7,7 @@ import '../../../core/constants/app_text_styles.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../models/order_models.dart';
 import '../../../providers/session_provider.dart';
+import '../../../providers/auth_provider.dart';
 import '../../orders/providers/order_provider.dart';
 import '../../shop/providers/shop_provider.dart';
 import '../providers/cart_provider.dart';
@@ -22,6 +23,18 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   PaymentMode _mode = PaymentMode.cash;
   FulfillmentType _fulfillmentType = FulfillmentType.pickup;
   Order? _placedOrder;
+  
+  // For Guest Customers
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   Future<void> _confirmAndPlaceOrder() async {
     final t = AppLocalizations.of(context);
@@ -55,11 +68,33 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   Future<void> _placeOrder() async {
     final session = ref.read(sessionProvider);
     final lines = ref.read(cartProvider);
-    if (session.userId == null || session.shopId == null || lines.isEmpty) return;
+    if (session.shopId == null || lines.isEmpty) return;
+
+    if (session.userId == null) {
+      if (!(_formKey.currentState?.validate() ?? false)) return;
+    }
+
+    String customerId = session.userId ?? '';
+
+    // If guest, create their profile on the backend first
+    if (session.userId == null) {
+      ref.read(checkoutProvider.notifier).state = const CheckoutState(isLoading: true);
+      try {
+        final user = await ref.read(authProvider.notifier).upsertGuestUser(
+          name: _nameController.text.trim(),
+          phone: _phoneController.text.trim(),
+        );
+        customerId = user['id'];
+        ref.read(sessionProvider.notifier).setUser(userId: customerId, role: UserRole.customer);
+      } catch (e) {
+        ref.read(checkoutProvider.notifier).state = const CheckoutState(isLoading: false, errorMessage: 'Failed to create customer profile');
+        return;
+      }
+    }
 
     final order = await ref.read(checkoutProvider.notifier).placeOrder(
           shopId: session.shopId!,
-          customerId: session.userId!,
+          customerId: customerId,
           items: lines.map((l) => l.toOrderItem()).toList(),
           paymentMode: _mode,
           fulfillmentType: _fulfillmentType,
@@ -95,6 +130,41 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (ref.watch(sessionProvider).userId == null) ...[
+                      Text('Your Details', style: AppTextStyles.h3),
+                      const SizedBox(height: AppSpacing.sm),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _nameController,
+                              textCapitalization: TextCapitalization.words,
+                              decoration: InputDecoration(
+                                hintText: t.t('authNameHint'),
+                              ),
+                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter your name' : null,
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            TextFormField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                hintText: t.t('authPhoneHint'),
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
+                                  child: Text('+91', style: AppTextStyles.bodyLarge),
+                                ),
+                                prefixIconConstraints: const BoxConstraints(minWidth: 0),
+                              ),
+                              validator: (v) => (v == null || v.trim().length != 10) ? 'Please enter 10 digit number' : null,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                    ],
+
                     Text(t.t('checkoutFulfillment'), style: AppTextStyles.h3),
                     const SizedBox(height: AppSpacing.md),
                     Row(

@@ -53,6 +53,11 @@ class SessionNotifier extends StateNotifier<SessionState> {
     _prefs.saveUser(userId: userId, role: role.apiValue);
   }
 
+  void setRole(UserRole role) {
+    state = state.copyWith(role: role);
+    _prefs.saveRole(role.apiValue);
+  }
+
   /// Called once a shop is created (owner) or linked via code/QR
   /// (customer) — this is the "always there" memory the plan calls
   /// for, so the shop doesn't need re-linking on every app open.

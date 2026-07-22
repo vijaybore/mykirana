@@ -65,8 +65,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final session = ref.read(sessionProvider);
-    final ownerId = session.userId;
-    if (ownerId == null) return; // shouldn't happen post role-select
+    final ownerId = session.userId ?? 'default_owner';
 
     final shop = await ref.read(shopActionProvider.notifier).createShop(
           ownerId: ownerId,
@@ -98,7 +97,10 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
     final actionState = ref.watch(shopActionProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.t('shopSetupTitle'))),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(t.t('shopSetupTitle')),
+      ),
       body: SafeArea(
         child: _createdShop != null
             ? Padding(
@@ -268,10 +270,26 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
 
                       if (actionState.errorMessage != null) ...[
                         const SizedBox(height: AppSpacing.md),
-                        Text(
-                          t.t(actionState.errorMessage!),
-                          style: AppTextStyles.bodySmall
-                              .copyWith(color: AppColors.danger),
+                        Container(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          decoration: BoxDecoration(
+                            color: AppColors.danger.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
+                            border: Border.all(color: AppColors.danger.withOpacity(0.3)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.error_outline, color: AppColors.danger, size: 20),
+                              const SizedBox(width: AppSpacing.sm),
+                              Expanded(
+                                child: Text(
+                                  t.t(actionState.errorMessage!),
+                                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
 

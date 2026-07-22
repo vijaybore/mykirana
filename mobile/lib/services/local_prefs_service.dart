@@ -40,6 +40,11 @@ class LocalPrefsService {
     await prefs.setString('locale_code', localeCode);
   }
 
+  Future<void> saveRole(String role) async {
+    final prefs = await _prefs;
+    await prefs.setString('role', role);
+  }
+
   Future<void> saveUser({
     required String userId,
     required String role,

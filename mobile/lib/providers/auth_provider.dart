@@ -7,8 +7,11 @@ import '../services/api_service.dart';
 /// isn't left staring at a generic "something went wrong" when the
 /// real problem is "the backend isn't running / isn't reachable".
 String errorKeyFor(Object e) {
-  if (e is ApiException && e.isConnectionError) return 'errorNoServerConnection';
-  return 'errorGeneric';
+  if (e is ApiException) {
+    if (e.isConnectionError) return 'errorNoServerConnection';
+    return e.message;
+  }
+  return e.toString().replaceAll('Exception: ', '');
 }
 
 enum AuthStep { phoneInput, otpVerify, roleSelect, done }
@@ -85,6 +88,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final ApiService _api;
 
   Future<void> sendOtp(String phoneNumber) async {
+    final cleanPhone = phoneNumber.replaceAll(RegExp(r'\D'), '');
+    
+    // Check whitelist for Shop Owners
+    const allowedOwners = [
+      '8956824842',
+      '8805707911',
+      '8805779621',
+      '9923185742',
+      '9511689937',
+    ];
+    
+    if (!allowedOwners.contains(cleanPhone)) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'PAYWALL',
+      );
+      return;
+    }
+
     state = state.copyWith(
       isLoading: true,
       clearError: true,
@@ -103,9 +125,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
           }
         },
         verificationFailed: (FirebaseAuthException e) {
+          print('verificationFailed Code: ${e.code}');
+          print('verificationFailed Message: ${e.message}');
+          print('verificationFailed StackTrace: ${e.stackTrace}');
           state = state.copyWith(
             isLoading: false,
-            errorMessage: 'errorGeneric',
+            errorMessage: 'Firebase Error: ${e.message}',
           );
         },
         codeSent: (String verificationId, int? resendToken) {
@@ -120,10 +145,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
           // Auto-retrieval timeout
         },
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('sendOtp Catch: $e');
+      print('sendOtp StackTrace: $stackTrace');
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'errorGeneric',
+        errorMessage: e.toString(),
       );
     }
   }
@@ -188,6 +215,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: errorKeyFor(e));
     }
+  }
+
+  Future<Map<String, dynamic>> upsertGuestUser({required String name, required String phone}) async {
+    return await _api.upsertUser(
+      phone: phone,
+      role: UserRole.customer.apiValue,
+      name: name,
+    );
   }
 }
 

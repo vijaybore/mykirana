@@ -123,13 +123,34 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                 ),
 
                 if (authState.errorMessage != null) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    t.t(authState.errorMessage!),
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.danger,
+                  const SizedBox(height: AppSpacing.md),
+                  if (authState.errorMessage == 'PAYWALL')
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.danger.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        border: Border.all(color: AppColors.danger.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.error_outline, color: AppColors.danger, size: 20),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              "Subscription required to register a shop: ₹500/month.",
+                              style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    Text(
+                      t.t(authState.errorMessage!),
+                      style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
                     ),
-                  ),
                 ],
 
                 const Spacer(flex: 3),

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
@@ -7,6 +7,7 @@ import 'providers/auth_provider.dart' show UserRole;
 import 'providers/locale_provider.dart';
 import 'providers/session_provider.dart';
 import 'features/auth/screens/phone_input_screen.dart';
+import 'features/auth/screens/welcome_role_screen.dart';
 import 'features/auth/screens/otp_verify_screen.dart';
 import 'features/auth/screens/role_select_screen.dart';
 import 'features/shop/screens/shop_setup_screen.dart';
@@ -27,8 +28,12 @@ import 'features/orders/screens/customer_orders_screen.dart';
 /// shop is created or linked, the app skips straight back to it
 /// instead of re-running auth/setup every time.
 String _resolveInitialRoute(SessionState session) {
-  if (session.userId == null || session.role == null) {
-    return '/'; // never completed login — start fresh
+  if (session.role == null) {
+    return '/'; // never started — ask role
+  }
+  
+  if (session.role == UserRole.owner && session.userId == null) {
+    return '/auth/phone'; // Owner chose role but hasn't logged in yet
   }
   if (session.hasLinkedShop) {
     return session.role == UserRole.owner
@@ -80,7 +85,8 @@ class MyApp extends ConsumerWidget {
         );
       },
       routes: {
-        '/': (context) => const PhoneInputScreen(),
+        '/': (context) => const WelcomeRoleScreen(),
+        '/auth/phone': (context) => const PhoneInputScreen(),
         '/auth/otp': (context) => const OtpVerifyScreen(),
         '/auth/role': (context) => const RoleSelectScreen(),
         '/owner/shop-setup': (context) => const ShopSetupScreen(),

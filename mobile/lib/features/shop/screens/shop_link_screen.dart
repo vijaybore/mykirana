@@ -33,8 +33,9 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
     if (code.trim().isEmpty) return;
 
     final session = ref.read(sessionProvider);
-    final customerId = session.userId;
-    if (customerId == null) return;
+    // Customers may be guests (no userId yet) — that's fine, shop linking
+    // doesn't require a user record; the customer's profile is created at checkout.
+    final customerId = session.userId ?? 'guest';
 
     final shop = await ref.read(shopActionProvider.notifier).linkToShopByCode(
           customerId: customerId,
@@ -107,7 +108,14 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.t('shopLinkTitle'))),
+      appBar: AppBar(
+        title: Text(t.t('shopLinkTitle')),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context)
+              .pushNamedAndRemoveUntil('/', (r) => false),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.screenPadding),

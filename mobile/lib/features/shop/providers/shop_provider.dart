@@ -50,7 +50,11 @@ class ShopActionNotifier extends StateNotifier<ShopActionState> {
       state = state.copyWith(isLoading: false);
       return shop;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: errorKeyFor(e));
+      String errorMessage = errorKeyFor(e);
+      if (e is ApiException && e.statusCode == 403) {
+        errorMessage = e.message;
+      }
+      state = state.copyWith(isLoading: false, errorMessage: errorMessage);
       return null;
     }
   }
