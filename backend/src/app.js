@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -18,8 +19,8 @@ app.use(cors());
 app.use(express.json());
 
 const limiter = rateLimit({
-  windowMs: process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000,
-  max: process.env.RATE_LIMIT_MAX_REQUESTS || 100,
+  windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
   standardHeaders: true,
   legacyHeaders: false,
 });
