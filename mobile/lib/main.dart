@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'app.dart';
 import 'providers/auth_provider.dart' show UserRoleX;
 import 'providers/locale_provider.dart';
@@ -8,6 +9,7 @@ import 'services/local_prefs_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   // Load whatever was persisted last time (language, role, linked
   // shop) *before* the first frame, so the app opens straight into

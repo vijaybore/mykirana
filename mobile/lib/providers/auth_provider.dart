@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../services/api_service.dart';
 
 /// Maps a caught error to a localization key. Connection failures
@@ -90,13 +91,34 @@ class AuthNotifier extends StateNotifier<AuthState> {
       phoneNumber: phoneNumber,
     );
     try {
-      // TODO: replace with FirebaseAuth.instance.verifyPhoneNumber(...)
-      await Future.delayed(const Duration(seconds: 1));
-      state = state.copyWith(
-        isLoading: false,
-        step: AuthStep.otpVerify,
-        verificationId: 'mock-verification-id',
-        resendCooldownSeconds: 30,
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: '+91$phoneNumber',
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Android only: automatic SMS resolution
+          try {
+            await FirebaseAuth.instance.signInWithCredential(credential);
+            state = state.copyWith(isLoading: false, step: AuthStep.roleSelect);
+          } catch (e) {
+            state = state.copyWith(isLoading: false, errorMessage: 'authOtpError');
+          }
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: 'errorGeneric',
+          );
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          state = state.copyWith(
+            isLoading: false,
+            step: AuthStep.otpVerify,
+            verificationId: verificationId,
+            resendCooldownSeconds: 30,
+          );
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Auto-retrieval timeout
+        },
       );
     } catch (e) {
       state = state.copyWith(
@@ -109,12 +131,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> verifyOtp(String otp) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      // TODO: replace with FirebaseAuth signInWithCredential using
-      // PhoneAuthProvider.credential(verificationId, otp)
-      await Future.delayed(const Duration(milliseconds: 800));
       if (otp.length != 6) {
         throw Exception('invalid');
       }
+      final verificationId = state.verificationId;
+      if (verificationId == null) throw Exception('missing_verification_id');
+
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otp,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
       // TODO: check backend if user already has a role -> skip to done
       state = state.copyWith(isLoading: false, step: AuthStep.roleSelect);
     } catch (e) {

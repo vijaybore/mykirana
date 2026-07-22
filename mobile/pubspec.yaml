@@ -52,6 +52,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
@@ -60,3 +61,10 @@ flutter:
     - lib/localization/en.json
     - lib/localization/hi.json
     - lib/localization/mr.json
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/icon.png"
+  min_sdk_android: 23 # Matches our build.gradle configuration
+  adaptive_icon_background: "#1B6B4A" # Assuming standard primary color for background
+  adaptive_icon_foreground: "assets/icon.png"
