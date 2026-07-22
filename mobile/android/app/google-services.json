@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977188885752",
+    "project_id": "mykirana-1e888",
+    "storage_bucket": "mykirana-1e888.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977188885752:android:bdc4fc8c22da13c7d8570d",
+        "android_client_info": {
+          "package_name": "com.mykirana.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvB0wN-FYoY_vc2PhM9uX_l6XadQ5R-rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
