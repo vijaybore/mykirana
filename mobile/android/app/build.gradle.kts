@@ -14,14 +14,14 @@ var hasKeystore = false
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
     val storeFileName = keystoreProperties["storeFile"] as String?
-    if (storeFileName != null && rootProject.file(storeFileName).exists()) {
+    if (storeFileName != null && file(storeFileName).exists()) {
         hasKeystore = true
     }
 }
 
 android {
-    namespace = "com.mykirana.app"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.vijaybore.mykirana"
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -30,9 +30,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.mykirana.app"
+        applicationId = "com.vijaybore.mykirana"
         minSdk = flutter.minSdkVersion
-        targetSdk = 34
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
