@@ -84,25 +84,63 @@ class _OwnerOrderCard extends ConsumerWidget {
           Text('₹${order.total.toStringAsFixed(0)}', style: AppTextStyles.priceMedium),
           const SizedBox(height: AppSpacing.md),
           OrderStatusStepper(status: order.status),
-          if (order.status != OrderStatus.completed) ...[
+          if (order.status != OrderStatus.completed && order.status != OrderStatus.cancelled) ...[
             const SizedBox(height: AppSpacing.md),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () {
-                  final next = order.status == OrderStatus.placed
-                      ? OrderStatus.ready
-                      : OrderStatus.completed;
-                  ref.read(shopOrdersProvider(shopId).notifier).updateStatus(order.id, next);
-                },
-                child: Text(
-                  order.status == OrderStatus.placed
-                      ? t.t('orderMarkReady')
-                      : t.t('orderMarkCompleted'),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      final next = order.status == OrderStatus.placed
+                          ? OrderStatus.ready
+                          : OrderStatus.completed;
+                      ref.read(shopOrdersProvider(shopId).notifier).updateStatus(order.id, next);
+                    },
+                    child: Text(
+                      order.status == OrderStatus.placed
+                          ? t.t('orderMarkReady')
+                          : t.t('orderMarkCompleted'),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: AppSpacing.sm),
+                TextButton(
+                  onPressed: () => _confirmCancel(context, ref),
+                  child: Text(
+                    t.t('orderCancel'),
+                    style: const TextStyle(color: AppColors.danger),
+                  ),
+                ),
+              ],
             ),
           ],
+        ],
+      ),
+    );
+  }
+
+  void _confirmCancel(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.t('orderCancelConfirmTitle')),
+        content: Text(t.t('orderCancelConfirmBody')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(t.t('commonCancel')),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ref.read(shopOrdersProvider(shopId).notifier).updateStatus(
+                    order.id,
+                    OrderStatus.cancelled,
+                  );
+            },
+            child: Text(t.t('orderCancel'), style: const TextStyle(color: AppColors.danger)),
+          ),
         ],
       ),
     );

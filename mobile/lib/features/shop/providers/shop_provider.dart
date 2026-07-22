@@ -32,6 +32,9 @@ class ShopActionNotifier extends StateNotifier<ShopActionState> {
     required String shopName,
     String? address,
     String? businessUpiId,
+    String? contactPhone,
+    String? shopImageUrl,
+    String? upiQrImageUrl,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
@@ -40,6 +43,37 @@ class ShopActionNotifier extends StateNotifier<ShopActionState> {
         shopName: shopName,
         address: address,
         businessUpiId: businessUpiId,
+        contactPhone: contactPhone,
+        shopImageUrl: shopImageUrl,
+        upiQrImageUrl: upiQrImageUrl,
+      );
+      state = state.copyWith(isLoading: false);
+      return shop;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: errorKeyFor(e));
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> updateShop({
+    required String shopId,
+    String? shopName,
+    String? address,
+    String? businessUpiId,
+    String? contactPhone,
+    String? shopImageUrl,
+    String? upiQrImageUrl,
+  }) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final shop = await _api.updateShop(
+        id: shopId,
+        shopName: shopName,
+        address: address,
+        businessUpiId: businessUpiId,
+        contactPhone: contactPhone,
+        shopImageUrl: shopImageUrl,
+        upiQrImageUrl: upiQrImageUrl,
       );
       state = state.copyWith(isLoading: false);
       return shop;
@@ -86,4 +120,15 @@ final shopActionProvider =
     StateNotifierProvider<ShopActionNotifier, ShopActionState>(
   (ref) => ShopActionNotifier(ref.watch(_apiServiceProvider)),
 );
+
+/// Full shop record (address, UPI, contact, images — everything the
+/// slim session state doesn't carry) looked up by code. Shared by
+/// checkout (needs the UPI ID) and the shop-edit screen (needs
+/// everything, to pre-fill the form).
+final shopDetailsProvider =
+    FutureProvider.family.autoDispose<Map<String, dynamic>?, String>((ref, shopCode) async {
+  if (shopCode.isEmpty) return null;
+  final api = ref.watch(_apiServiceProvider);
+  return api.getShopByCode(shopCode);
+});
 

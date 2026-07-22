@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/widgets/picked_image_preview.dart';
+import '../../../core/utils/validators.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/session_provider.dart';
 import '../providers/shop_provider.dart';
 
-/// Step 4 — owner fills in shop name/address/UPI, we create the shop
-/// and generate its code + QR, then the owner lands on this same
-/// screen's "created" state before continuing to the dashboard.
+/// Step 4 — owner fills in shop name/address/contact/UPI/photos, we
+/// create the shop and generate its code + QR, then the owner lands on
+/// this same screen's "created" state before continuing to the dashboard.
+///
+/// NOTE on the two image fields (shop photo, UPI QR photo): like the
+/// product photo picker, there's no image-upload endpoint on the
+/// backend yet, so the local file path is stored as-is. This previews
+/// fine on this device but won't resolve on another device/session
+/// until real upload (e.g. Firebase Storage, already a dependency) is
+/// wired up — a flagged follow-up, not a silent gap.
 class ShopSetupScreen extends ConsumerStatefulWidget {
   const ShopSetupScreen({super.key});
 
@@ -23,6 +33,10 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _upiController = TextEditingController();
+  final _contactController = TextEditingController();
+
+  String? _shopImagePath;
+  String? _upiQrImagePath;
 
   Map<String, dynamic>? _createdShop;
 
@@ -31,7 +45,20 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
     _nameController.dispose();
     _addressController.dispose();
     _upiController.dispose();
+    _contactController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickShopImage() async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+    if (file != null) setState(() => _shopImagePath = file.path);
+  }
+
+  Future<void> _pickUpiQrImage() async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+    if (file != null) setState(() => _upiQrImagePath = file.path);
   }
 
   Future<void> _handleCreate() async {
@@ -48,6 +75,11 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
           businessUpiId: _upiController.text.trim().isEmpty
               ? null
               : _upiController.text.trim(),
+          contactPhone: _contactController.text.trim().isEmpty
+              ? null
+              : _contactController.text.trim(),
+          shopImageUrl: _shopImagePath,
+          upiQrImageUrl: _upiQrImagePath,
         );
 
     if (shop != null) {
@@ -68,15 +100,18 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(t.t('shopSetupTitle'))),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.screenPadding),
-          child: _createdShop != null
-              ? _ShopCreatedView(
+        child: _createdShop != null
+            ? Padding(
+                padding: const EdgeInsets.all(AppSpacing.screenPadding),
+                child: _ShopCreatedView(
                   shop: _createdShop!,
                   onContinue: () => Navigator.of(context)
                       .pushNamedAndRemoveUntil('/owner/dashboard', (r) => false),
-                )
-              : Form(
+                ),
+              )
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.screenPadding),
+                child: Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,6 +122,42 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                             .copyWith(color: AppColors.textSecondary),
                       ),
                       const SizedBox(height: AppSpacing.xl),
+
+                      // Shop photo
+                      Text(t.t('shopImageLabel'), style: AppTextStyles.label),
+                      const SizedBox(height: AppSpacing.sm),
+                      GestureDetector(
+                        onTap: _pickShopImage,
+                        child: Container(
+                          height: 96,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: _shopImagePath == null
+                              ? Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.add_a_photo_outlined,
+                                          color: AppColors.textMuted),
+                                      const SizedBox(height: 4),
+                                      Text(t.t('shopImagePick'),
+                                          style: AppTextStyles.caption),
+                                    ],
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(AppRadius.md),
+                                  child: PickedImagePreview(
+                                      path: _shopImagePath!,
+                                      fit: BoxFit.cover, width: double.infinity),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
 
                       Text(t.t('shopNameLabel'), style: AppTextStyles.label),
                       const SizedBox(height: AppSpacing.sm),
@@ -113,6 +184,21 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                       ),
                       const SizedBox(height: AppSpacing.lg),
 
+                      Text(t.t('shopContactLabel'), style: AppTextStyles.label),
+                      const SizedBox(height: AppSpacing.sm),
+                      TextFormField(
+                        controller: _contactController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: t.t('shopContactHint'),
+                        ),
+                        validator: (v) => Validators.phone(
+                          v,
+                          errorMessage: t.t('shopContactError'),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+
                       Text(t.t('shopUpiLabel'), style: AppTextStyles.label),
                       const SizedBox(height: AppSpacing.sm),
                       TextFormField(
@@ -120,12 +206,65 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                         decoration: InputDecoration(
                           hintText: t.t('shopUpiHint'),
                         ),
+                        validator: (v) => Validators.upiId(
+                          v,
+                          errorMessage: t.t('shopUpiError'),
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         t.t('shopUpiNote'),
                         style: AppTextStyles.caption,
                       ),
+                      const SizedBox(height: AppSpacing.md),
+
+                      Row(
+                        children: [
+                          const Expanded(child: Divider()),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                            child: Text(t.t('shopLinkOr'), style: AppTextStyles.caption),
+                          ),
+                          const Expanded(child: Divider()),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+
+                      Text(t.t('shopUpiQrImageLabel'), style: AppTextStyles.label),
+                      const SizedBox(height: AppSpacing.sm),
+                      GestureDetector(
+                        onTap: _pickUpiQrImage,
+                        child: Container(
+                          height: 96,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: _upiQrImagePath == null
+                              ? Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.qr_code_2_rounded,
+                                          color: AppColors.textMuted),
+                                      const SizedBox(height: 4),
+                                      Text(t.t('shopUpiQrImagePick'),
+                                          style: AppTextStyles.caption),
+                                    ],
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(AppRadius.md),
+                                  child: PickedImagePreview(
+                                      path: _upiQrImagePath!,
+                                      fit: BoxFit.contain, width: double.infinity),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(t.t('shopUpiQrImageNote'), style: AppTextStyles.caption),
 
                       if (actionState.errorMessage != null) ...[
                         const SizedBox(height: AppSpacing.md),
@@ -136,7 +275,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                         ),
                       ],
 
-                      const Spacer(),
+                      const SizedBox(height: AppSpacing.xl),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -158,7 +297,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                     ],
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }
@@ -238,4 +377,3 @@ class _ShopCreatedView extends StatelessWidget {
     );
   }
 }
-

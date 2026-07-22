@@ -14,6 +14,7 @@ import 'features/shop/screens/shop_link_screen.dart';
 import 'features/shop/screens/owner_dashboard_screen.dart';
 import 'features/shop/screens/customer_home_screen.dart';
 import 'features/shop/screens/shop_qr_screen.dart';
+import 'features/shop/screens/shop_edit_screen.dart';
 import 'features/products/screens/owner_product_list_screen.dart';
 import 'features/products/screens/customer_browse_screen.dart';
 import 'features/cart/screens/cart_screen.dart';
@@ -88,6 +89,7 @@ class MyApp extends ConsumerWidget {
         '/owner/products': (context) => const OwnerProductListScreen(),
         '/owner/orders': (context) => const OwnerOrdersScreen(),
         '/owner/shop-qr': (context) => const ShopQrScreen(),
+        '/owner/shop-edit': (context) => const ShopEditScreen(),
         '/customer/home': (context) => const CustomerHomeScreen(),
         '/customer/browse': (context) => const CustomerBrowseScreen(),
         '/customer/cart': (context) => const CartScreen(),

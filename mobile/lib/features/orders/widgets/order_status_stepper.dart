@@ -7,6 +7,9 @@ import '../../../models/order_models.dart';
 
 /// placed -> ready -> completed, shown as three connected dots so the
 /// customer (and owner) can see progress at a glance without reading text.
+/// A cancelled order is a separate terminal state, not "step 4" of this
+/// progression, so it renders as its own badge instead of forcing all
+/// three dots to look complete.
 class OrderStatusStepper extends StatelessWidget {
   const OrderStatusStepper({super.key, required this.status});
 
@@ -15,6 +18,21 @@ class OrderStatusStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
+
+    if (status == OrderStatus.cancelled) {
+      return Row(
+        children: [
+          const Icon(Icons.cancel_outlined, size: 18, color: AppColors.danger),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            t.t('orderStatusCancelled'),
+            style: AppTextStyles.bodyMedium
+                .copyWith(color: AppColors.danger, fontWeight: FontWeight.w600),
+          ),
+        ],
+      );
+    }
+
     final steps = [
       (OrderStatus.placed, t.t('orderStatusPlaced')),
       (OrderStatus.ready, t.t('orderStatusReady')),

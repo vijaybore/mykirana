@@ -4,6 +4,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/widgets/picked_image_preview.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../models/product_models.dart';
 import '../../../providers/session_provider.dart';
@@ -189,11 +190,9 @@ class _Thumbnail extends StatelessWidget {
         color: AppColors.background,
         child: (imageUrl == null || imageUrl!.isEmpty)
             ? const Icon(Icons.inventory_2_outlined, color: AppColors.textMuted)
-            : Image.network(
-                imageUrl!,
+            : PickedImagePreview(
+                path: imageUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
-                    const Icon(Icons.inventory_2_outlined, color: AppColors.textMuted),
               ),
       ),
     );

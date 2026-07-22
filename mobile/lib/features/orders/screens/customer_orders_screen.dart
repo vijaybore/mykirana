@@ -39,7 +39,8 @@ class CustomerOrdersScreen extends ConsumerWidget {
             return ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.screenPadding),
               itemCount: orders.length,
-              itemBuilder: (context, i) => _CustomerOrderCard(order: orders[i]),
+              itemBuilder: (context, i) =>
+                  _CustomerOrderCard(order: orders[i], args: args),
             );
           },
         ),
@@ -48,12 +49,13 @@ class CustomerOrdersScreen extends ConsumerWidget {
   }
 }
 
-class _CustomerOrderCard extends StatelessWidget {
-  const _CustomerOrderCard({required this.order});
+class _CustomerOrderCard extends ConsumerWidget {
+  const _CustomerOrderCard({required this.order, required this.args});
   final Order order;
+  final ({String customerId, String shopId}) args;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
 
     return Container(
@@ -81,6 +83,46 @@ class _CustomerOrderCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           OrderStatusStepper(status: order.status),
+          // Once the shop has marked it "ready", cancelling is the
+          // shop's call, not the customer's — goods may already be
+          // set aside or a delivery may already be in motion.
+          if (order.status == OrderStatus.placed) ...[
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () => _confirmCancel(context, ref),
+                child: Text(
+                  t.t('orderCancel'),
+                  style: const TextStyle(color: AppColors.danger),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _confirmCancel(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.t('orderCancelConfirmTitle')),
+        content: Text(t.t('orderCancelConfirmBody')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(t.t('commonCancel')),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ref.read(customerOrdersProvider(args).notifier).cancelOrder(order.id);
+            },
+            child: Text(t.t('orderCancel'), style: const TextStyle(color: AppColors.danger)),
+          ),
         ],
       ),
     );

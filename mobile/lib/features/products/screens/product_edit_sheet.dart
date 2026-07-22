@@ -1,10 +1,10 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/widgets/picked_image_preview.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../models/product_models.dart';
 import '../providers/product_provider.dart';
@@ -176,9 +176,10 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                             color: AppColors.textMuted)
                         : ClipRRect(
                             borderRadius: BorderRadius.circular(AppRadius.md),
-                            child: _localImagePath!.startsWith('http')
-                                ? Image.network(_localImagePath!, fit: BoxFit.cover)
-                                : Image.file(File(_localImagePath!), fit: BoxFit.cover),
+                            child: PickedImagePreview(
+                              path: _localImagePath!,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                   ),
                 ),

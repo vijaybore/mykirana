@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/widgets/picked_image_preview.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../models/product_models.dart';
 import '../../../providers/session_provider.dart';
@@ -24,10 +26,12 @@ class CustomerBrowseScreen extends ConsumerStatefulWidget {
 
 class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
   final _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void dispose() {
     _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -89,8 +93,12 @@ class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
             ),
             child: TextField(
               controller: _searchController,
-              onChanged: (v) =>
-                  ref.read(browseFiltersProvider.notifier).setSearch(v),
+              onChanged: (v) {
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 400), () {
+                  ref.read(browseFiltersProvider.notifier).setSearch(v);
+                });
+              },
               decoration: InputDecoration(
                 hintText: t.t('browseSearchHint'),
                 prefixIcon: const Icon(Icons.search_rounded),
@@ -234,11 +242,9 @@ class _ProductCard extends ConsumerWidget {
                 child: (product.imageUrl == null || product.imageUrl!.isEmpty)
                     ? const Icon(Icons.inventory_2_outlined,
                         color: AppColors.textMuted, size: 32)
-                    : Image.network(
-                        product.imageUrl!,
+                    : PickedImagePreview(
+                        path: product.imageUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(
-                            Icons.inventory_2_outlined, color: AppColors.textMuted),
                       ),
               ),
             ),

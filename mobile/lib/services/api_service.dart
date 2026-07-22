@@ -1,17 +1,34 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
+
+/// Picks a sensible default backend URL per platform, so switching
+/// between "flutter run -d chrome" and an Android emulator doesn't
+/// require hand-editing this file (which is exactly how this default
+/// kept quietly reverting during development).
+///
+/// - Web (Chrome): the backend is just a normal process on your own
+///   machine, reachable at plain localhost.
+/// - Android emulator: 10.0.2.2 is the emulator's special alias for
+///   the host machine's localhost — "localhost" from inside the
+///   emulator means the emulator itself, not your PC.
+/// - Real device / staging / production: neither default is reachable
+///   (a phone can't resolve "localhost" to your laptop) — pass an
+///   explicit baseUrl (your LAN IP, or the deployed backend URL) when
+///   constructing ApiService in that case.
+String _defaultBaseUrl() {
+  if (kIsWeb) return 'http://localhost:4000';
+  return 'http://10.0.2.2:4000';
+}
 
 /// Thin wrapper around the MyKirana backend REST API.
 /// Base URL is swappable per environment — point it at your local
 /// backend during development, then at the deployed Render/Railway
 /// URL for staging/production builds.
 class ApiService {
-  ApiService({this.baseUrl = 'http://localhost:4000'});
+  ApiService({String? baseUrl}) : baseUrl = baseUrl ?? _defaultBaseUrl();
 
-  /// 10.0.2.2 is the Android emulator's alias for the host machine's
-  /// localhost. Use your machine's LAN IP instead when testing on a
-  /// real device, or the deployed backend URL for staging/production.
   final String baseUrl;
 
   /// Every request gets a hard timeout. Without this, a request to an
@@ -133,12 +150,39 @@ class ApiService {
     required String shopName,
     String? address,
     String? businessUpiId,
+    String? contactPhone,
+    String? shopImageUrl,
+    String? upiQrImageUrl,
   }) async {
     final res = await _post('/shops', {
       'ownerId': ownerId,
       'shopName': shopName,
       'address': address,
       'businessUpiId': businessUpiId,
+      'contactPhone': contactPhone,
+      'shopImageUrl': shopImageUrl,
+      'upiQrImageUrl': upiQrImageUrl,
+    });
+    _throwIfError(res);
+    return jsonDecode(res.body) as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> updateShop({
+    required String id,
+    String? shopName,
+    String? address,
+    String? businessUpiId,
+    String? contactPhone,
+    String? shopImageUrl,
+    String? upiQrImageUrl,
+  }) async {
+    final res = await _put('/shops/$id', {
+      'shopName': shopName,
+      'address': address,
+      'businessUpiId': businessUpiId,
+      'contactPhone': contactPhone,
+      'shopImageUrl': shopImageUrl,
+      'upiQrImageUrl': upiQrImageUrl,
     });
     _throwIfError(res);
     return jsonDecode(res.body) as Map<String, dynamic>;

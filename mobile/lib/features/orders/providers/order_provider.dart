@@ -40,6 +40,7 @@ class ShopOrdersNotifier extends StateNotifier<AsyncValue<List<Order>>> {
               items: o.items,
               paymentMode: o.paymentMode,
               paymentStatus: o.paymentStatus,
+              fulfillmentType: o.fulfillmentType,
               status: status,
               createdAt: o.createdAt,
             )
@@ -82,6 +83,40 @@ class CustomerOrdersNotifier extends StateNotifier<AsyncValue<List<Order>>> {
       state = AsyncValue.error(e, st);
     }
   }
+
+  /// Lets a customer cancel their own order before the shop marks it
+  /// ready. The backend independently enforces that a completed order
+  /// can't be cancelled and reverses any udhari credit — this is just
+  /// the optimistic-update mirror of that on the customer's list.
+  Future<bool> cancelOrder(String orderId) async {
+    final previous = state;
+    state = state.whenData(
+      (orders) => [
+        for (final o in orders)
+          if (o.id == orderId)
+            Order(
+              id: o.id,
+              shopId: o.shopId,
+              customerId: o.customerId,
+              items: o.items,
+              paymentMode: o.paymentMode,
+              paymentStatus: o.paymentStatus,
+              fulfillmentType: o.fulfillmentType,
+              status: OrderStatus.cancelled,
+              createdAt: o.createdAt,
+            )
+          else
+            o,
+      ],
+    );
+    try {
+      await _api.updateOrderStatus(id: orderId, status: OrderStatus.cancelled.apiValue);
+      return true;
+    } catch (_) {
+      state = previous;
+      return false;
+    }
+  }
 }
 
 final customerOrdersProvider = StateNotifierProvider.family<
@@ -118,6 +153,7 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
     required String customerId,
     required List<Map<String, dynamic>> items,
     required PaymentMode paymentMode,
+    FulfillmentType fulfillmentType = FulfillmentType.pickup,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
@@ -126,6 +162,7 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
         customerId: customerId,
         items: items,
         paymentMode: paymentMode.apiValue,
+        fulfillmentType: fulfillmentType.apiValue,
       );
       state = state.copyWith(isLoading: false);
       return Order.fromJson(json);

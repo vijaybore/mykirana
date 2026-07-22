@@ -47,7 +47,17 @@ extension PaymentModeX on PaymentMode {
   }
 }
 
-enum OrderStatus { placed, ready, completed }
+enum FulfillmentType { pickup, delivery }
+
+extension FulfillmentTypeX on FulfillmentType {
+  String get apiValue => this == FulfillmentType.delivery ? 'delivery' : 'pickup';
+
+  static FulfillmentType fromApi(String? value) {
+    return value == 'delivery' ? FulfillmentType.delivery : FulfillmentType.pickup;
+  }
+}
+
+enum OrderStatus { placed, ready, completed, cancelled }
 
 extension OrderStatusX on OrderStatus {
   String get apiValue {
@@ -58,10 +68,15 @@ extension OrderStatusX on OrderStatus {
         return 'ready';
       case OrderStatus.completed:
         return 'completed';
+      case OrderStatus.cancelled:
+        return 'cancelled';
     }
   }
 
   /// Position in the pickup flow — drives the order-status stepper UI.
+  /// Only meaningful for placed/ready/completed; cancelled is a
+  /// terminal side-state the stepper renders separately rather than
+  /// treating as "step 4" of the same progression.
   int get stepIndex => index;
 
   static OrderStatus fromApi(String value) {
@@ -70,6 +85,8 @@ extension OrderStatusX on OrderStatus {
         return OrderStatus.ready;
       case 'completed':
         return OrderStatus.completed;
+      case 'cancelled':
+        return OrderStatus.cancelled;
       default:
         return OrderStatus.placed;
     }
@@ -108,6 +125,7 @@ class Order {
   final List<OrderItem> items;
   final PaymentMode paymentMode;
   final String paymentStatus; // 'pending' | 'confirmed'
+  final FulfillmentType fulfillmentType;
   final OrderStatus status;
   final DateTime createdAt;
 
@@ -118,6 +136,7 @@ class Order {
     required this.items,
     required this.paymentMode,
     required this.paymentStatus,
+    required this.fulfillmentType,
     required this.status,
     required this.createdAt,
   });
@@ -135,6 +154,7 @@ class Order {
       items: itemsList,
       paymentMode: PaymentModeX.fromApi(json['payment_mode'] as String),
       paymentStatus: json['payment_status'] as String? ?? 'pending',
+      fulfillmentType: FulfillmentTypeX.fromApi(json['fulfillment_type'] as String?),
       status: OrderStatusX.fromApi(json['status'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),
     );

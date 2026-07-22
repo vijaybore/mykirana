@@ -5,12 +5,14 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/session_provider.dart';
+import '../../../models/order_models.dart';
 import '../../orders/providers/order_provider.dart';
 import '../../orders/screens/owner_orders_screen.dart';
-import '../../../models/order_models.dart';
 import '../../products/screens/owner_product_list_screen.dart';
 import '../../udhari/providers/udhari_provider.dart';
 import '../../udhari/screens/udhari_customer_list_screen.dart';
+import '../../shared/widgets/switch_account_action.dart';
+import 'shop_edit_screen.dart';
 import 'shop_qr_screen.dart';
 
 /// Owner's home base — shop code at a glance, then quick access to the
@@ -40,8 +42,10 @@ class OwnerDashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(t.t('dashboardWelcome')),
         actions: [
+          const SwitchAccountAction(),
           IconButton(
             icon: const Icon(Icons.qr_code_rounded),
             tooltip: t.t('shopQrTitle'),
@@ -78,7 +82,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  Icon(Icons.storefront_rounded, color: AppColors.primary, size: 36),
+                  const Icon(Icons.storefront_rounded, color: AppColors.primary, size: 36),
                 ],
               ),
             ),
@@ -134,6 +138,14 @@ class OwnerDashboardScreen extends ConsumerWidget {
               title: t.t('dashboardViewShopQr'),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const ShopQrScreen()),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            _NavCard(
+              icon: Icons.storefront_outlined,
+              title: t.t('dashboardEditShop'),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ShopEditScreen()),
               ),
             ),
           ],

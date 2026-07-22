@@ -3,7 +3,7 @@ const pool = require('../db/pool');
 
 const router = express.Router();
 
-const VALID_STATUSES = ['placed', 'ready', 'completed'];
+const VALID_STATUSES = ['placed', 'ready', 'completed', 'cancelled'];
 
 // POST /orders — customer places an order.
 // items is a snapshot at order time: [{ product_id, name, price, quantity }]
@@ -92,8 +92,15 @@ router.get('/customer/:customerId', async (req, res) => {
   res.json(result.rows);
 });
 
-// PATCH /orders/:id/status — owner moves an order through
-// placed -> ready -> completed
+// PATCH /orders/:id/status — owner (or customer, for their own
+// not-yet-ready orders) moves an order through placed -> ready ->
+// completed, or cancels it.
+//
+// Cancelling a udhari order must also reverse the credit that was
+// created when it was placed, or the customer would be left owing
+// money for goods they never actually took. That reversal + the
+// status change happen in one DB transaction so they can't get out
+// of sync if something fails partway through.
 router.patch('/:id/status', async (req, res) => {
   const { status } = req.body;
 
@@ -103,16 +110,63 @@ router.patch('/:id/status', async (req, res) => {
       .json({ error: `status must be one of: ${VALID_STATUSES.join(', ')}` });
   }
 
-  const result = await pool.query(
-    `UPDATE orders SET status = $1 WHERE id = $2 RETURNING *`,
-    [status, req.params.id]
-  );
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
 
-  if (result.rows.length === 0) {
-    return res.status(404).json({ error: 'Order not found' });
+    const existingResult = await client.query(
+      `SELECT * FROM orders WHERE id = $1 FOR UPDATE`,
+      [req.params.id]
+    );
+    const existing = existingResult.rows[0];
+
+    if (!existing) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (status === 'cancelled') {
+      if (existing.status === 'completed') {
+        await client.query('ROLLBACK');
+        return res
+          .status(400)
+          .json({ error: 'A completed order cannot be cancelled' });
+      }
+      if (existing.status === 'cancelled') {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: 'Order is already cancelled' });
+      }
+      if (existing.payment_mode === 'udhari') {
+        const total = existing.items.reduce(
+          (sum, item) => sum + Number(item.price) * Number(item.quantity),
+          0
+        );
+        await client.query(
+          `INSERT INTO udhari_transactions (shop_id, customer_id, type, amount, note)
+           VALUES ($1, $2, 'payment', $3, $4)`,
+          [
+            existing.shop_id,
+            existing.customer_id,
+            total,
+            `Order #${existing.id.slice(0, 8)} cancelled`,
+          ]
+        );
+      }
+    }
+
+    const updateResult = await client.query(
+      `UPDATE orders SET status = $1 WHERE id = $2 RETURNING *`,
+      [status, req.params.id]
+    );
+
+    await client.query('COMMIT');
+    res.json(updateResult.rows[0]);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
-
-  res.json(result.rows[0]);
 });
 
 // PATCH /orders/:id/payment-status — owner marks cash/UPI as confirmed
@@ -138,3 +192,4 @@ router.patch('/:id/payment-status', async (req, res) => {
 });
 
 module.exports = router;
+  

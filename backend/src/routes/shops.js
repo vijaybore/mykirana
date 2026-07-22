@@ -20,7 +20,15 @@ function deriveShopCode(shopName) {
 // POST /shops — create a shop (used by admin during pilot onboarding,
 // or by an owner's self-service registration screen later)
 router.post('/', async (req, res) => {
-  const { ownerId, shopName, address, businessUpiId } = req.body;
+  const {
+    ownerId,
+    shopName,
+    address,
+    businessUpiId,
+    contactPhone,
+    shopImageUrl,
+    upiQrImageUrl,
+  } = req.body;
 
   if (!ownerId || !shopName) {
     return res.status(400).json({ error: 'ownerId and shopName are required' });
@@ -35,10 +43,21 @@ router.post('/', async (req, res) => {
     shopCode = deriveShopCode(shopName);
     try {
       const result = await pool.query(
-        `INSERT INTO shops (owner_id, shop_name, shop_code, address, business_upi_id)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO shops
+           (owner_id, shop_name, shop_code, address, business_upi_id,
+            contact_phone, shop_image_url, upi_qr_image_url)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
-        [ownerId, shopName, shopCode, address, businessUpiId]
+        [
+          ownerId,
+          shopName,
+          shopCode,
+          address,
+          businessUpiId,
+          contactPhone || null,
+          shopImageUrl || null,
+          upiQrImageUrl || null,
+        ]
       );
       created = result.rows[0];
     } catch (err) {
@@ -80,6 +99,33 @@ router.get('/by-code/:code', async (req, res) => {
 
   if (result.rows.length === 0) {
     return res.status(404).json({ error: 'Shop not found for this code' });
+  }
+
+  res.json(result.rows[0]);
+});
+
+// PUT /shops/:id — edit shop details (name/address/UPI/contact/images).
+// The setup screen already tells the owner "you can edit it later" —
+// this is what makes that true.
+router.put('/:id', async (req, res) => {
+  const { shopName, address, businessUpiId, contactPhone, shopImageUrl, upiQrImageUrl } =
+    req.body;
+
+  const result = await pool.query(
+    `UPDATE shops
+     SET shop_name = COALESCE($1, shop_name),
+         address = COALESCE($2, address),
+         business_upi_id = COALESCE($3, business_upi_id),
+         contact_phone = COALESCE($4, contact_phone),
+         shop_image_url = COALESCE($5, shop_image_url),
+         upi_qr_image_url = COALESCE($6, upi_qr_image_url)
+     WHERE id = $7
+     RETURNING *`,
+    [shopName, address, businessUpiId, contactPhone, shopImageUrl, upiQrImageUrl, req.params.id]
+  );
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({ error: 'Shop not found' });
   }
 
   res.json(result.rows[0]);

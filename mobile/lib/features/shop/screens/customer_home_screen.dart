@@ -9,6 +9,7 @@ import '../../cart/providers/cart_provider.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../orders/screens/customer_orders_screen.dart';
 import '../../products/screens/customer_browse_screen.dart';
+import '../../shared/widgets/switch_account_action.dart';
 import '../../udhari/providers/udhari_provider.dart';
 import '../../udhari/screens/my_udhari_screen.dart';
 
@@ -31,7 +32,13 @@ class CustomerHomeScreen extends ConsumerWidget {
     final cartCount = ref.watch(cartItemCountProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.t('customerHomeWelcome'))),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          t.t('customerHomeWelcomeTo', params: {'shopName': session.shopName ?? ''}),
+        ),
+        actions: const [SwitchAccountAction()],
+      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.screenPadding),
@@ -55,7 +62,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  Icon(Icons.storefront_rounded, color: AppColors.primary, size: 32),
+                  const Icon(Icons.storefront_rounded, color: AppColors.primary, size: 32),
                 ],
               ),
             ),
