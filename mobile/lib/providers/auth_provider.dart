@@ -102,7 +102,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (!allowedOwners.contains(cleanPhone)) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'PAYWALL',
+        errorMessage: 'authUnauthorizedOwner',
       );
       return;
     }

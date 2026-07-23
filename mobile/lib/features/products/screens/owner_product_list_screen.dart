@@ -37,6 +37,7 @@ class OwnerProductListScreen extends ConsumerWidget {
           loading: () => _LoadingList(),
           error: (err, st) => _ErrorState(
             onRetry: () => ref.read(productListProvider(shopId).notifier).refresh(),
+            error: err.toString(),
           ),
           data: (products) {
             if (products.isEmpty) {
@@ -245,26 +246,37 @@ class _EmptyState extends StatelessWidget {
 }
 
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.onRetry});
+  const _ErrorState({required this.onRetry, this.error});
   final VoidCallback onRetry;
+  final String? error;
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textMuted),
-            SizedBox(height: AppSpacing.md),
-            Text(t.t('errorGeneric'), textAlign: TextAlign.center),
-            SizedBox(height: AppSpacing.md),
-            OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
-          ],
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.danger),
+                SizedBox(height: AppSpacing.md),
+                Text(
+                  error != null && error!.isNotEmpty ? error! : t.t('errorGeneric'),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodyMedium,
+                ),
+                SizedBox(height: AppSpacing.md),
+                OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

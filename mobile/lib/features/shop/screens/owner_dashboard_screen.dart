@@ -11,7 +11,6 @@ import '../../orders/screens/owner_orders_screen.dart';
 import '../../products/screens/owner_product_list_screen.dart';
 import '../../udhari/providers/udhari_provider.dart';
 import '../../udhari/screens/udhari_customer_list_screen.dart';
-import '../../shared/widgets/switch_account_action.dart';
 import 'shop_edit_screen.dart';
 import 'shop_qr_screen.dart';
 
@@ -45,7 +44,11 @@ class OwnerDashboardScreen extends ConsumerWidget {
         automaticallyImplyLeading: false,
         title: Text(t.t('dashboardWelcome')),
         actions: [
-          const SwitchAccountAction(),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded),
+            tooltip: t.t('settingsTitle'),
+            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+          ),
           IconButton(
             icon: const Icon(Icons.qr_code_rounded),
             tooltip: t.t('shopQrTitle'),

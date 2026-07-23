@@ -133,32 +133,45 @@ class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
           ),
           SizedBox(height: AppSpacing.sm),
           Expanded(
-            child: productsAsync.when(
-              loading: () => _LoadingGrid(),
-              error: (err, st) => _ErrorState(
-                onRetry: () => ref.invalidate(browseProductsProvider(shopId)),
-              ),
-              data: (products) {
-                if (products.isEmpty) {
-                  return _EmptyState(message: t.t('browseEmpty'));
-                }
-                return GridView.builder(
-                  padding: EdgeInsets.fromLTRB(
-                    AppSpacing.screenPadding,
-                    0,
-                    AppSpacing.screenPadding,
-                    AppSpacing.xxxl,
-                  ),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: AppSpacing.md,
-                    crossAxisSpacing: AppSpacing.md,
-                    childAspectRatio: 0.78,
-                  ),
-                  itemCount: products.length,
-                  itemBuilder: (context, i) => _ProductCard(product: products[i]),
-                );
+            child: RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(browseProductsProvider(shopId));
               },
+              child: productsAsync.when(
+                loading: () => _LoadingGrid(),
+                error: (err, st) => _ErrorState(
+                  onRetry: () => ref.invalidate(browseProductsProvider(shopId)),
+                  error: err.toString(),
+                ),
+                data: (products) {
+                  if (products.isEmpty) {
+                    return ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                        _EmptyState(message: t.t('browseEmpty')),
+                      ],
+                    );
+                  }
+                  return GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(
+                      AppSpacing.screenPadding,
+                      0,
+                      AppSpacing.screenPadding,
+                      AppSpacing.xxxl,
+                    ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: AppSpacing.md,
+                      crossAxisSpacing: AppSpacing.md,
+                      childAspectRatio: 0.78,
+                    ),
+                    itemCount: products.length,
+                    itemBuilder: (context, i) => _ProductCard(product: products[i]),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -364,26 +377,37 @@ class _EmptyState extends StatelessWidget {
 }
 
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.onRetry});
+  const _ErrorState({required this.onRetry, this.error});
   final VoidCallback onRetry;
+  final String? error;
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textMuted),
-            SizedBox(height: AppSpacing.md),
-            Text(t.t('errorGeneric'), textAlign: TextAlign.center),
-            SizedBox(height: AppSpacing.md),
-            OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
-          ],
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.danger),
+                SizedBox(height: AppSpacing.md),
+                Text(
+                  error != null && error!.isNotEmpty ? error! : t.t('errorGeneric'),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodyMedium,
+                ),
+                SizedBox(height: AppSpacing.md),
+                OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

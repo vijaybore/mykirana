@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BootstrapState {
@@ -78,5 +79,46 @@ class LocalPrefsService {
   Future<void> clearAll() async {
     final prefs = await _prefs;
     await prefs.clear();
+  }
+
+  Future<List<Map<String, String>>> getVisitedShops() async {
+    final prefs = await _prefs;
+    final jsonStr = prefs.getString('visited_shops_json');
+    if (jsonStr == null || jsonStr.isEmpty) return [];
+    try {
+      final decoded = jsonDecode(jsonStr) as List;
+      return decoded.map((item) {
+        final map = item as Map<String, dynamic>;
+        return {
+          'id': map['id'] as String? ?? '',
+          'name': map['name'] as String? ?? '',
+          'code': map['code'] as String? ?? '',
+        };
+      }).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> addVisitedShop({
+    required String shopId,
+    required String shopName,
+    required String shopCode,
+  }) async {
+    final prefs = await _prefs;
+    final list = await getVisitedShops();
+    // Remove if already exists so we can move it to the top
+    list.removeWhere((item) => item['code'] == shopCode);
+    // Add to the front
+    list.insert(0, {
+      'id': shopId,
+      'name': shopName,
+      'code': shopCode,
+    });
+    // Keep only last 10
+    if (list.length > 10) {
+      list.removeRange(10, list.length);
+    }
+    await prefs.setString('visited_shops_json', jsonEncode(list));
   }
 }

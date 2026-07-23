@@ -87,9 +87,9 @@ function mockQuery(text, params = []) {
       shop_code,
       address,
       business_upi_id,
-      upi_qr_image_url,
       contact_phone,
       shop_image_url,
+      upi_qr_image_url,
     ] = params;
     const shop = {
       id: crypto.randomUUID(),
@@ -181,7 +181,7 @@ function mockQuery(text, params = []) {
   }
 
   if (sql.includes('INSERT INTO products')) {
-    const [shop_id, category_id, name, price, unit, in_stock, image_url] = params;
+    const [shop_id, category_id, name, price, unit, image_url, in_stock] = params;
     const prod = {
       id: crypto.randomUUID(),
       shop_id,

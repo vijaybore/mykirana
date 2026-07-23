@@ -22,6 +22,7 @@ import 'features/products/screens/customer_browse_screen.dart';
 import 'features/cart/screens/cart_screen.dart';
 import 'features/orders/screens/owner_orders_screen.dart';
 import 'features/orders/screens/customer_orders_screen.dart';
+import 'features/shared/screens/settings_screen.dart';
 
 /// Figures out where a returning user should land, based on what was
 /// persisted locally at the last app close (see main.dart's bootstrap
@@ -104,6 +105,7 @@ class MyApp extends ConsumerWidget {
         '/customer/browse': (context) => const CustomerBrowseScreen(),
         '/customer/cart': (context) => const CartScreen(),
         '/customer/orders': (context) => const CustomerOrdersScreen(),
+        '/settings': (context) => const SettingsScreen(),
       },
     );
   }

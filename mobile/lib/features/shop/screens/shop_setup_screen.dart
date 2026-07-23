@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
-import '../../../core/utils/screen_util.dart';
-import '../../../core/widgets/picked_image_preview.dart';
+import '../../../core/widgets/image_picker_field.dart';
 import '../../../core/utils/validators.dart';
 import '../../../localization/app_localizations.dart';
+import '../../../services/api_service.dart';
 import '../../../providers/session_provider.dart';
 import '../providers/shop_provider.dart';
 
@@ -40,6 +39,40 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
   String? _upiQrImagePath;
 
   Map<String, dynamic>? _createdShop;
+  bool _checkingShop = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForExistingShop();
+  }
+
+  Future<void> _checkForExistingShop() async {
+    final session = ref.read(sessionProvider);
+    final ownerId = session.userId;
+    if (ownerId != null && ownerId.isNotEmpty) {
+      try {
+        final api = ApiService();
+        final shop = await api.getShopByOwner(ownerId);
+        if (shop != null && mounted) {
+          ref.read(sessionProvider.notifier).setLinkedShop(
+                shopId: shop['id'] as String,
+                shopName: shop['shop_name'] as String,
+                shopCode: shop['shop_code'] as String,
+              );
+          Navigator.of(context).pushNamedAndRemoveUntil('/owner/dashboard', (r) => false);
+          return;
+        }
+      } catch (e) {
+        // Silently catch and allow setup form
+      }
+    }
+    if (mounted) {
+      setState(() {
+        _checkingShop = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -50,17 +83,6 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
     super.dispose();
   }
 
-  Future<void> _pickShopImage() async {
-    final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
-    if (file != null) setState(() => _shopImagePath = file.path);
-  }
-
-  Future<void> _pickUpiQrImage() async {
-    final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
-    if (file != null) setState(() => _upiQrImagePath = file.path);
-  }
 
   Future<void> _handleCreate() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -97,6 +119,14 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
     final t = AppLocalizations.of(context);
     final actionState = ref.watch(shopActionProvider);
 
+    if (_checkingShop) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -127,37 +157,18 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                       SizedBox(height: AppSpacing.xl),
 
                       // Shop photo
-                      Text(t.t('shopImageLabel'), style: AppTextStyles.label),
-                      SizedBox(height: AppSpacing.sm),
-                      GestureDetector(
-                        onTap: _pickShopImage,
-                        child: Container(
-                          height: ScreenUtil.dp(96),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(AppRadius.md),
-                            border: Border.all(color: AppColors.border),
-                          ),
-                          child: _shopImagePath == null
-                              ? Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(Icons.add_a_photo_outlined,
-                                          color: AppColors.textMuted),
-                                      const SizedBox(height: 4),
-                                      Text(t.t('shopImagePick'),
-                                          style: AppTextStyles.caption),
-                                    ],
-                                  ),
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(AppRadius.md),
-                                  child: PickedImagePreview(
-                                      path: _shopImagePath!,
-                                      fit: BoxFit.cover, width: double.infinity),
-                                ),
+                      ImagePickerField(
+                        path: _shopImagePath,
+                        label: t.t('shopImageLabel'),
+                        size: 100,
+                        onChanged: (p) => setState(() => _shopImagePath = p),
+                        placeholder: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.add_a_photo_outlined, color: AppColors.textMuted),
+                            const SizedBox(height: 4),
+                            Text(t.t('shopImagePick'), style: AppTextStyles.caption),
+                          ],
                         ),
                       ),
                       SizedBox(height: AppSpacing.lg),
@@ -233,37 +244,19 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                       ),
                       SizedBox(height: AppSpacing.md),
 
-                      Text(t.t('shopUpiQrImageLabel'), style: AppTextStyles.label),
-                      SizedBox(height: AppSpacing.sm),
-                      GestureDetector(
-                        onTap: _pickUpiQrImage,
-                        child: Container(
-                          height: ScreenUtil.dp(96),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(AppRadius.md),
-                            border: Border.all(color: AppColors.border),
-                          ),
-                          child: _upiQrImagePath == null
-                              ? Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(Icons.qr_code_2_rounded,
-                                          color: AppColors.textMuted),
-                                      const SizedBox(height: 4),
-                                      Text(t.t('shopUpiQrImagePick'),
-                                          style: AppTextStyles.caption),
-                                    ],
-                                  ),
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(AppRadius.md),
-                                  child: PickedImagePreview(
-                                      path: _upiQrImagePath!,
-                                      fit: BoxFit.contain, width: double.infinity),
-                                ),
+                      // UPI QR image
+                      ImagePickerField(
+                        path: _upiQrImagePath,
+                        label: t.t('shopUpiQrImageLabel'),
+                        size: 100,
+                        onChanged: (p) => setState(() => _upiQrImagePath = p),
+                        placeholder: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.qr_code_2_rounded, color: AppColors.textMuted),
+                            const SizedBox(height: 4),
+                            Text(t.t('shopUpiQrImagePick'), style: AppTextStyles.caption),
+                          ],
                         ),
                       ),
                       SizedBox(height: AppSpacing.xs),
@@ -274,9 +267,9 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                         Container(
                           padding: EdgeInsets.all(AppSpacing.md),
                           decoration: BoxDecoration(
-                            color: AppColors.danger.withOpacity(0.1),
+                            color: AppColors.danger.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(AppRadius.sm),
-                            border: Border.all(color: AppColors.danger.withOpacity(0.3)),
+                            border: Border.all(color: AppColors.danger.withValues(alpha: 0.3)),
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,9 +330,9 @@ class _ShopCreatedView extends StatelessWidget {
       children: [
         SizedBox(height: AppSpacing.xl),
         Container(
-          width: ScreenUtil.dp(72),
-          height: ScreenUtil.dp(72),
-          decoration: BoxDecoration(
+          width: 72,
+          height: 72,
+          decoration: const BoxDecoration(
             color: AppColors.udhariClearBg,
             shape: BoxShape.circle,
           ),
@@ -369,7 +362,7 @@ class _ShopCreatedView extends StatelessWidget {
             children: [
               QrImageView(
                 data: shopCode,
-                size: ScreenUtil.dp(180),
+                size: 180,
                 backgroundColor: Colors.white,
               ),
               SizedBox(height: AppSpacing.lg),

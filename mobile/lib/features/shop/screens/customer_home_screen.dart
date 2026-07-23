@@ -10,7 +10,6 @@ import '../../cart/providers/cart_provider.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../orders/screens/customer_orders_screen.dart';
 import '../../products/screens/customer_browse_screen.dart';
-import '../../shared/widgets/switch_account_action.dart';
 import '../../udhari/providers/udhari_provider.dart';
 import '../../udhari/screens/my_udhari_screen.dart';
 
@@ -38,7 +37,13 @@ class CustomerHomeScreen extends ConsumerWidget {
         title: Text(
           t.t('customerHomeWelcomeTo', params: {'shopName': session.shopName ?? ''}),
         ),
-        actions: const [SwitchAccountAction()],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_rounded),
+            tooltip: t.t('settingsTitle'),
+            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+          ),
+        ],
       ),
       body: SafeArea(
         child: ListView(

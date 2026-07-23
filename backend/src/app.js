@@ -39,10 +39,13 @@ app.use('/categories', categoriesRouter);
 app.use('/products', productsRouter);
 app.use('/orders', ordersRouter);
 
-// Basic error handler — keeps stack traces out of API responses
+// Basic error handler — exposes stack traces and detailed messages in development
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).json({ error: 'Something went wrong' });
+  res.status(500).json({
+    error: err.message || 'Something went wrong',
+    stack: err.stack,
+  });
 });
 
 module.exports = app;

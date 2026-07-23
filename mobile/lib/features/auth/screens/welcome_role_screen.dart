@@ -7,6 +7,7 @@ import '../../../core/utils/screen_util.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/session_provider.dart';
 import '../../../providers/auth_provider.dart' show UserRole;
+
 import '../../shared/widgets/language_switcher_pill.dart';
 
 class WelcomeRoleScreen extends ConsumerWidget {
@@ -36,7 +37,7 @@ class WelcomeRoleScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: AppSpacing.md),
+              const SizedBox(height: 12),
               const Align(
                 alignment: Alignment.centerRight,
                 child: LanguageSwitcherPill(),
@@ -67,7 +68,7 @@ class WelcomeRoleScreen extends ConsumerWidget {
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
-                "How do you want to use MyKirana?",
+                'How do you want to use MyKirana?',
                 style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
