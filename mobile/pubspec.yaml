@@ -1,7 +1,7 @@
 name: mykirana
 description: "MyKirana — digital udhari and ordering for village kirana shops."
 publish_to: 'none'
-version: 1.0.0+18
+version: 1.0.0+20
 
 environment:
   sdk: '^3.12.0'
