@@ -33,18 +33,18 @@ class MyUdhariScreen extends ConsumerWidget {
           baseColor: AppColors.skeletonBase,
           highlightColor: AppColors.skeletonHighlight,
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.screenPadding),
+            padding: EdgeInsets.all(AppSpacing.screenPadding),
             child: Column(
               children: [
                 Container(height: 120, decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.lg),
                 )),
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
                 for (int i = 0; i < 4; i++)
                   Container(
                     height: 56,
-                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    margin: EdgeInsets.only(bottom: AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(AppRadius.md),
@@ -62,19 +62,19 @@ class MyUdhariScreen extends ConsumerWidget {
               ref.invalidate(udhariHistoryProvider(args));
             },
             child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
               children: [
                 UdhariBalanceCard(
                   balance: notifier.balance,
                   label: t.t('udhariMyBalanceOwing'),
                   clearLabel: t.t('udhariMyBalanceClear'),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
                 Text(t.t('navUdhari'), style: AppTextStyles.h3),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
                 if (history.isEmpty)
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                    padding: EdgeInsets.symmetric(vertical: AppSpacing.xxl),
                     child: Center(
                       child: Text(
                         t.t('udhariHistoryEmpty'),

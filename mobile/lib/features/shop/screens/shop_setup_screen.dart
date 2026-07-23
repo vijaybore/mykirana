@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/utils/screen_util.dart';
 import '../../../core/widgets/picked_image_preview.dart';
 import '../../../core/utils/validators.dart';
 import '../../../localization/app_localizations.dart';
@@ -104,7 +105,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
       body: SafeArea(
         child: _createdShop != null
             ? Padding(
-                padding: const EdgeInsets.all(AppSpacing.screenPadding),
+                padding: EdgeInsets.all(AppSpacing.screenPadding),
                 child: _ShopCreatedView(
                   shop: _createdShop!,
                   onContinue: () => Navigator.of(context)
@@ -112,7 +113,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                 ),
               )
             : SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.screenPadding),
+                padding: EdgeInsets.all(AppSpacing.screenPadding),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -123,15 +124,15 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: AppColors.textSecondary),
                       ),
-                      const SizedBox(height: AppSpacing.xl),
+                      SizedBox(height: AppSpacing.xl),
 
                       // Shop photo
                       Text(t.t('shopImageLabel'), style: AppTextStyles.label),
-                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(height: AppSpacing.sm),
                       GestureDetector(
                         onTap: _pickShopImage,
                         child: Container(
-                          height: 96,
+                          height: ScreenUtil.dp(96),
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: AppColors.surface,
@@ -159,10 +160,10 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                                 ),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      SizedBox(height: AppSpacing.lg),
 
                       Text(t.t('shopNameLabel'), style: AppTextStyles.label),
-                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(height: AppSpacing.sm),
                       TextFormField(
                         controller: _nameController,
                         textCapitalization: TextCapitalization.words,
@@ -173,10 +174,10 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                             ? t.t('shopNameHint')
                             : null,
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      SizedBox(height: AppSpacing.lg),
 
                       Text(t.t('shopAddressLabel'), style: AppTextStyles.label),
-                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(height: AppSpacing.sm),
                       TextFormField(
                         controller: _addressController,
                         maxLines: 2,
@@ -184,10 +185,10 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                           hintText: t.t('shopAddressHint'),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      SizedBox(height: AppSpacing.lg),
 
                       Text(t.t('shopContactLabel'), style: AppTextStyles.label),
-                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(height: AppSpacing.sm),
                       TextFormField(
                         controller: _contactController,
                         keyboardType: TextInputType.phone,
@@ -199,10 +200,10 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                           errorMessage: t.t('shopContactError'),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      SizedBox(height: AppSpacing.lg),
 
                       Text(t.t('shopUpiLabel'), style: AppTextStyles.label),
-                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(height: AppSpacing.sm),
                       TextFormField(
                         controller: _upiController,
                         decoration: InputDecoration(
@@ -213,31 +214,31 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                           errorMessage: t.t('shopUpiError'),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      SizedBox(height: AppSpacing.xs),
                       Text(
                         t.t('shopUpiNote'),
                         style: AppTextStyles.caption,
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      SizedBox(height: AppSpacing.md),
 
                       Row(
                         children: [
                           const Expanded(child: Divider()),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                             child: Text(t.t('shopLinkOr'), style: AppTextStyles.caption),
                           ),
                           const Expanded(child: Divider()),
                         ],
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      SizedBox(height: AppSpacing.md),
 
                       Text(t.t('shopUpiQrImageLabel'), style: AppTextStyles.label),
-                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(height: AppSpacing.sm),
                       GestureDetector(
                         onTap: _pickUpiQrImage,
                         child: Container(
-                          height: 96,
+                          height: ScreenUtil.dp(96),
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: AppColors.surface,
@@ -265,13 +266,13 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                                 ),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      SizedBox(height: AppSpacing.xs),
                       Text(t.t('shopUpiQrImageNote'), style: AppTextStyles.caption),
 
                       if (actionState.errorMessage != null) ...[
-                        const SizedBox(height: AppSpacing.md),
+                        SizedBox(height: AppSpacing.md),
                         Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
+                          padding: EdgeInsets.all(AppSpacing.md),
                           decoration: BoxDecoration(
                             color: AppColors.danger.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -281,7 +282,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Icon(Icons.error_outline, color: AppColors.danger, size: 20),
-                              const SizedBox(width: AppSpacing.sm),
+                              SizedBox(width: AppSpacing.sm),
                               Expanded(
                                 child: Text(
                                   t.t(actionState.errorMessage!),
@@ -293,7 +294,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                         ),
                       ],
 
-                      const SizedBox(height: AppSpacing.xl),
+                      SizedBox(height: AppSpacing.xl),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -311,7 +312,7 @@ class _ShopSetupScreenState extends ConsumerState<ShopSetupScreen> {
                               : Text(t.t('shopSetupCreate')),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.lg),
+                      SizedBox(height: AppSpacing.lg),
                     ],
                   ),
                 ),
@@ -334,31 +335,31 @@ class _ShopCreatedView extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: AppSpacing.xl),
+        SizedBox(height: AppSpacing.xl),
         Container(
-          width: 72,
-          height: 72,
-          decoration: const BoxDecoration(
+          width: ScreenUtil.dp(72),
+          height: ScreenUtil.dp(72),
+          decoration: BoxDecoration(
             color: AppColors.udhariClearBg,
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.check_rounded,
               color: AppColors.udhariClear, size: 40),
         ),
-        const SizedBox(height: AppSpacing.lg),
+        SizedBox(height: AppSpacing.lg),
         Text(t.t('shopCreatedTitle'), style: AppTextStyles.h2,
             textAlign: TextAlign.center),
-        const SizedBox(height: AppSpacing.xs),
+        SizedBox(height: AppSpacing.xs),
         Text(
           t.t('shopCreatedSubtitle'),
           textAlign: TextAlign.center,
           style: AppTextStyles.bodyMedium
               .copyWith(color: AppColors.textSecondary),
         ),
-        const SizedBox(height: AppSpacing.xl),
+        SizedBox(height: AppSpacing.xl),
 
         Container(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+          padding: EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -368,10 +369,10 @@ class _ShopCreatedView extends StatelessWidget {
             children: [
               QrImageView(
                 data: shopCode,
-                size: 180,
+                size: ScreenUtil.dp(180),
                 backgroundColor: Colors.white,
               ),
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
               Text(t.t('shopCodeLabel'), style: AppTextStyles.label),
               const SizedBox(height: 4),
               Text(
@@ -390,7 +391,7 @@ class _ShopCreatedView extends StatelessWidget {
             child: Text(t.t('shopContinue')),
           ),
         ),
-        const SizedBox(height: AppSpacing.lg),
+        SizedBox(height: AppSpacing.lg),
       ],
     );
   }

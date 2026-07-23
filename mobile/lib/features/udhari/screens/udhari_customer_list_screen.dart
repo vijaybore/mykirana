@@ -44,11 +44,11 @@ class UdhariCustomerListScreen extends ConsumerWidget {
             );
 
             return ListView(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
               children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  padding: EdgeInsets.all(AppSpacing.lg),
                   decoration: BoxDecoration(
                     color: AppColors.udhariOwingBg,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -58,7 +58,7 @@ class UdhariCustomerListScreen extends ConsumerWidget {
                     children: [
                       Text(t.t('udhariTotalOwed'), style: AppTextStyles.label
                           .copyWith(color: AppColors.udhariOwing)),
-                      const SizedBox(height: AppSpacing.xs),
+                      SizedBox(height: AppSpacing.xs),
                       Text(
                         '₹${totalOwed.toStringAsFixed(0)}',
                         style: AppTextStyles.balanceAmount
@@ -67,7 +67,7 @@ class UdhariCustomerListScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
                 ...customers.map(
                   (c) => _CustomerCard(customer: c, shopId: shopId),
                 ),
@@ -92,7 +92,7 @@ class _CustomerCard extends StatelessWidget {
     final color = isClear ? AppColors.udhariClear : AppColors.udhariOwing;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: EdgeInsets.only(bottom: AppSpacing.sm),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppRadius.lg),
         onTap: () {
@@ -107,7 +107,7 @@ class _CustomerCard extends StatelessWidget {
           );
         },
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -125,7 +125,7 @@ class _CustomerCard extends StatelessWidget {
                   style: AppTextStyles.h3.copyWith(color: AppColors.primary),
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
+              SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +140,7 @@ class _CustomerCard extends StatelessWidget {
                 isClear ? '₹0' : '₹${customer.balance.toStringAsFixed(0)}',
                 style: AppTextStyles.priceMedium.copyWith(color: color),
               ),
-              const SizedBox(width: AppSpacing.xs),
+              SizedBox(width: AppSpacing.xs),
               const Icon(Icons.chevron_right_rounded,
                   color: AppColors.textMuted),
             ],
@@ -158,11 +158,11 @@ class _LoadingList extends StatelessWidget {
       baseColor: AppColors.skeletonBase,
       highlightColor: AppColors.skeletonHighlight,
       child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.screenPadding),
+        padding: EdgeInsets.all(AppSpacing.screenPadding),
         itemCount: 6,
         itemBuilder: (_, __) => Container(
           height: 68,
-          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+          margin: EdgeInsets.only(bottom: AppSpacing.sm),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -181,13 +181,13 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.receipt_long_rounded,
                 size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(message, textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMedium
                     .copyWith(color: AppColors.textSecondary)),
@@ -207,15 +207,15 @@ class _ErrorState extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.wifi_off_rounded,
                 size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(t.t('errorGeneric'), textAlign: TextAlign.center),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
           ],
         ),

@@ -119,14 +119,14 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
             _prefillFrom(shop);
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(t.t('shopImageLabel'), style: AppTextStyles.label),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     GestureDetector(
                       onTap: _pickShopImage,
                       child: Container(
@@ -159,10 +159,10 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
                               ),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
 
                     Text(t.t('shopNameLabel'), style: AppTextStyles.label),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     TextFormField(
                       controller: _nameController,
                       textCapitalization: TextCapitalization.words,
@@ -170,19 +170,19 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
                       validator: (v) =>
                           (v == null || v.trim().isEmpty) ? t.t('shopNameHint') : null,
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
 
                     Text(t.t('shopAddressLabel'), style: AppTextStyles.label),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     TextFormField(
                       controller: _addressController,
                       maxLines: 2,
                       decoration: InputDecoration(hintText: t.t('shopAddressHint')),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
 
                     Text(t.t('shopContactLabel'), style: AppTextStyles.label),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     TextFormField(
                       controller: _contactController,
                       keyboardType: TextInputType.phone,
@@ -190,32 +190,32 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
                       validator: (v) =>
                           Validators.phone(v, errorMessage: t.t('shopContactError')),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
 
                     Text(t.t('shopUpiLabel'), style: AppTextStyles.label),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     TextFormField(
                       controller: _upiController,
                       decoration: InputDecoration(hintText: t.t('shopUpiHint')),
                       validator: (v) =>
                           Validators.upiId(v, errorMessage: t.t('shopUpiError')),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(height: AppSpacing.md),
 
                     Row(
                       children: [
                         const Expanded(child: Divider()),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                          padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                           child: Text(t.t('shopLinkOr'), style: AppTextStyles.caption),
                         ),
                         const Expanded(child: Divider()),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(height: AppSpacing.md),
 
                     Text(t.t('shopUpiQrImageLabel'), style: AppTextStyles.label),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     GestureDetector(
                       onTap: _pickUpiQrImage,
                       child: Container(
@@ -251,14 +251,14 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
                     ),
 
                     if (actionState.errorMessage != null) ...[
-                      const SizedBox(height: AppSpacing.md),
+                      SizedBox(height: AppSpacing.md),
                       Text(
                         t.t(actionState.errorMessage!),
                         style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
                       ),
                     ],
 
-                    const SizedBox(height: AppSpacing.xl),
+                    SizedBox(height: AppSpacing.xl),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -275,7 +275,7 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
                             : Text(t.t('shopEditSave')),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(height: AppSpacing.lg),
                   ],
                 ),
               ),

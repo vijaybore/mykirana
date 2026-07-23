@@ -79,13 +79,13 @@ class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
                 ),
             ],
           ),
-          const SizedBox(width: AppSpacing.sm),
+          SizedBox(width: AppSpacing.sm),
         ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(
+            padding: EdgeInsets.fromLTRB(
               AppSpacing.screenPadding,
               AppSpacing.md,
               AppSpacing.screenPadding,
@@ -112,7 +112,7 @@ class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
               height: 44,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
                 children: [
                   _CategoryTab(
                     label: t.t('browseAllCategory'),
@@ -131,7 +131,7 @@ class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          SizedBox(height: AppSpacing.sm),
           Expanded(
             child: productsAsync.when(
               loading: () => _LoadingGrid(),
@@ -143,13 +143,13 @@ class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
                   return _EmptyState(message: t.t('browseEmpty'));
                 }
                 return GridView.builder(
-                  padding: const EdgeInsets.fromLTRB(
+                  padding: EdgeInsets.fromLTRB(
                     AppSpacing.screenPadding,
                     0,
                     AppSpacing.screenPadding,
                     AppSpacing.xxxl,
                   ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: AppSpacing.md,
                     crossAxisSpacing: AppSpacing.md,
@@ -167,7 +167,7 @@ class _CustomerBrowseScreenState extends ConsumerState<CustomerBrowseScreen> {
           ? null
           : SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const CartScreen()),
@@ -196,7 +196,7 @@ class _CategoryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: AppSpacing.sm),
+      padding: EdgeInsets.only(right: AppSpacing.sm),
       child: ChoiceChip(
         label: Text(label),
         selected: selected,
@@ -235,7 +235,7 @@ class _ProductCard extends ConsumerWidget {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
               child: Container(
                 width: double.infinity,
                 color: AppColors.background,
@@ -250,7 +250,7 @@ class _ProductCard extends ConsumerWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.sm),
+            padding: EdgeInsets.all(AppSpacing.sm),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -259,7 +259,7 @@ class _ProductCard extends ConsumerWidget {
                 const SizedBox(height: 2),
                 Text('₹${product.price.toStringAsFixed(0)} / ${product.unit}',
                     style: AppTextStyles.bodySmall),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
                 qty == 0
                     ? SizedBox(
                         width: double.infinity,
@@ -321,8 +321,8 @@ class _LoadingGrid extends StatelessWidget {
       baseColor: AppColors.skeletonBase,
       highlightColor: AppColors.skeletonHighlight,
       child: GridView.builder(
-        padding: const EdgeInsets.all(AppSpacing.screenPadding),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        padding: EdgeInsets.all(AppSpacing.screenPadding),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: AppSpacing.md,
           crossAxisSpacing: AppSpacing.md,
@@ -348,12 +348,12 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.search_off_rounded, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(message, textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
           ],
@@ -372,14 +372,14 @@ class _ErrorState extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(t.t('errorGeneric'), textAlign: TextAlign.center),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
           ],
         ),

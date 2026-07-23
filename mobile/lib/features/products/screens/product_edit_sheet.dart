@@ -131,11 +131,11 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
         ),
-        padding: const EdgeInsets.all(AppSpacing.screenPadding),
+        padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -147,7 +147,7 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                   child: Container(
                     width: 40,
                     height: 4,
-                    margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                    margin: EdgeInsets.only(bottom: AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: AppColors.border,
                       borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -158,7 +158,7 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                   _isEditing ? t.t('productEditTitle') : t.t('productAddTitle'),
                   style: AppTextStyles.h2,
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
 
                 // Image picker
                 GestureDetector(
@@ -183,10 +183,10 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                           ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
 
                 Text(t.t('productNameLabel'), style: AppTextStyles.label),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
@@ -194,7 +194,7 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? t.t('productNameError') : null,
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
 
                 Row(
                   children: [
@@ -203,7 +203,7 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(t.t('productPriceLabel'), style: AppTextStyles.label),
-                          const SizedBox(height: AppSpacing.sm),
+                          SizedBox(height: AppSpacing.sm),
                           TextFormField(
                             controller: _priceController,
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -219,13 +219,13 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(t.t('productUnitLabel'), style: AppTextStyles.label),
-                          const SizedBox(height: AppSpacing.sm),
+                          SizedBox(height: AppSpacing.sm),
                           TextFormField(
                             controller: _unitController,
                             decoration: InputDecoration(hintText: t.t('productUnitHint')),
@@ -238,10 +238,10 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
 
                 Text(t.t('productCategoryLabel'), style: AppTextStyles.label),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
                 categoriesAsync.when(
                   loading: () => const LinearProgressIndicator(),
                   error: (_, __) => const SizedBox.shrink(),
@@ -270,14 +270,14 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                 ),
 
                 if (formState.errorMessage != null) ...[
-                  const SizedBox(height: AppSpacing.md),
+                  SizedBox(height: AppSpacing.md),
                   Text(
                     t.t(formState.errorMessage!),
                     style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
                   ),
                 ],
 
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -294,7 +294,7 @@ class _ProductEditSheetState extends ConsumerState<ProductEditSheet> {
                         : Text(t.t('commonSave')),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),

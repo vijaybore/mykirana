@@ -23,7 +23,7 @@ class OrderStatusStepper extends StatelessWidget {
       return Row(
         children: [
           const Icon(Icons.cancel_outlined, size: 18, color: AppColors.danger),
-          const SizedBox(width: AppSpacing.xs),
+          SizedBox(width: AppSpacing.xs),
           Text(
             t.t('orderStatusCancelled'),
             style: AppTextStyles.bodyMedium
@@ -82,7 +82,7 @@ class _StepDot extends StatelessWidget {
               ? const Icon(Icons.check, size: 13, color: Colors.white)
               : null,
         ),
-        const SizedBox(height: AppSpacing.xs),
+        SizedBox(height: AppSpacing.xs),
         Text(
           label,
           style: AppTextStyles.caption.copyWith(

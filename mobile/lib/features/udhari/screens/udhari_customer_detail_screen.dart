@@ -36,18 +36,18 @@ class UdhariCustomerDetailScreen extends ConsumerWidget {
           baseColor: AppColors.skeletonBase,
           highlightColor: AppColors.skeletonHighlight,
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.screenPadding),
+            padding: EdgeInsets.all(AppSpacing.screenPadding),
             child: Column(
               children: [
                 Container(height: 110, decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.lg),
                 )),
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
                 for (int i = 0; i < 4; i++)
                   Container(
                     height: 56,
-                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    margin: EdgeInsets.only(bottom: AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(AppRadius.md),
@@ -60,17 +60,17 @@ class UdhariCustomerDetailScreen extends ConsumerWidget {
         error: (_, __) => Center(child: Text(t.t('errorGeneric'))),
         data: (history) {
           return ListView(
-            padding: const EdgeInsets.all(AppSpacing.screenPadding),
+            padding: EdgeInsets.all(AppSpacing.screenPadding),
             children: [
               UdhariBalanceCard(
                 balance: notifier.balance,
                 label: t.t('udhariTotalOwed'),
                 clearLabel: t.t('udhariAllClear'),
               ),
-              const SizedBox(height: AppSpacing.xl),
+              SizedBox(height: AppSpacing.xl),
               if (history.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                  padding: EdgeInsets.symmetric(vertical: AppSpacing.xxl),
                   child: Center(
                     child: Text(
                       t.t('udhariHistoryEmpty'),

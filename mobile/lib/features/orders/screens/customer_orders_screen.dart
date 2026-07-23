@@ -37,7 +37,7 @@ class CustomerOrdersScreen extends ConsumerWidget {
               return _EmptyState(message: t.t('ordersEmpty'));
             }
             return ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
               itemCount: orders.length,
               itemBuilder: (context, i) =>
                   _CustomerOrderCard(order: orders[i], args: args),
@@ -59,8 +59,8 @@ class _CustomerOrderCard extends ConsumerWidget {
     final t = AppLocalizations.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: EdgeInsets.only(bottom: AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -81,13 +81,13 @@ class _CustomerOrderCard extends ConsumerWidget {
             t.t('orderItemsCount', params: {'count': '${order.itemCount}'}),
             style: AppTextStyles.bodySmall,
           ),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md),
           OrderStatusStepper(status: order.status),
           // Once the shop has marked it "ready", cancelling is the
           // shop's call, not the customer's — goods may already be
           // set aside or a delivery may already be in motion.
           if (order.status == OrderStatus.placed) ...[
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             SizedBox(
               width: double.infinity,
               child: TextButton(
@@ -136,11 +136,11 @@ class _LoadingList extends StatelessWidget {
       baseColor: AppColors.skeletonBase,
       highlightColor: AppColors.skeletonHighlight,
       child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.screenPadding),
+        padding: EdgeInsets.all(AppSpacing.screenPadding),
         itemCount: 5,
         itemBuilder: (_, __) => Container(
           height: 110,
-          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          margin: EdgeInsets.only(bottom: AppSpacing.md),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -159,12 +159,12 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.receipt_long_rounded, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(message, textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
           ],
@@ -183,14 +183,14 @@ class _ErrorState extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(t.t('errorGeneric'), textAlign: TextAlign.center),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
           ],
         ),

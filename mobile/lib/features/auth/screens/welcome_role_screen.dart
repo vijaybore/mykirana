@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/utils/screen_util.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/session_provider.dart';
 import '../../../providers/auth_provider.dart' show UserRole;
@@ -31,11 +32,11 @@ class WelcomeRoleScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: AppSpacing.md),
+              SizedBox(height: AppSpacing.md),
               const Align(
                 alignment: Alignment.centerRight,
                 child: LanguageSwitcherPill(),
@@ -44,27 +45,27 @@ class WelcomeRoleScreen extends ConsumerWidget {
               
               Center(
                 child: Container(
-                  width: 96,
-                  height: 96,
+                  width: ScreenUtil.dp(96),
+                  height: ScreenUtil.dp(96),
                   decoration: BoxDecoration(
                     color: AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(AppSpacing.lg),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.storefront_rounded,
                     color: AppColors.primary,
-                    size: 48,
+                    size: ScreenUtil.dp(48),
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.xl),
+              SizedBox(height: AppSpacing.xl),
               
               Text(
                 t.t('authWelcomeTitle'), 
                 style: AppTextStyles.h1,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacing.sm),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 "How do you want to use MyKirana?",
                 style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
@@ -80,7 +81,7 @@ class WelcomeRoleScreen extends ConsumerWidget {
                 ),
                 child: const Text('I am a Customer', style: TextStyle(fontSize: 18)),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
               
               OutlinedButton(
                 onPressed: () => _selectOwner(context, ref),

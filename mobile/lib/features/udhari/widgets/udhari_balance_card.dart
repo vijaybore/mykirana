@@ -30,7 +30,7 @@ class UdhariBalanceCard extends StatelessWidget {
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeOut,
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -45,14 +45,14 @@ class UdhariBalanceCard extends StatelessWidget {
                 color: fg,
                 size: 18,
               ),
-              const SizedBox(width: AppSpacing.xs),
+              SizedBox(width: AppSpacing.xs),
               Text(
                 _isClear ? clearLabel : label,
                 style: AppTextStyles.label.copyWith(color: fg),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+          SizedBox(height: AppSpacing.sm),
           if (!_isClear)
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),

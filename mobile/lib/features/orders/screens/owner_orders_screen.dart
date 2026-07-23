@@ -35,7 +35,7 @@ class OwnerOrdersScreen extends ConsumerWidget {
               return _EmptyState(message: t.t('ordersEmptyOwner'));
             }
             return ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
               itemCount: orders.length,
               itemBuilder: (context, i) =>
                   _OwnerOrderCard(order: orders[i], shopId: shopId),
@@ -57,8 +57,8 @@ class _OwnerOrderCard extends ConsumerWidget {
     final t = AppLocalizations.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: EdgeInsets.only(bottom: AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -75,17 +75,17 @@ class _OwnerOrderCard extends ConsumerWidget {
               _PaymentBadge(order: order, t: t),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+          SizedBox(height: AppSpacing.sm),
           Text(
             t.t('orderItemsCount', params: {'count': '${order.itemCount}'}),
             style: AppTextStyles.bodyMedium,
           ),
           const SizedBox(height: 2),
           Text('₹${order.total.toStringAsFixed(0)}', style: AppTextStyles.priceMedium),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md),
           OrderStatusStepper(status: order.status),
           if (order.status != OrderStatus.completed && order.status != OrderStatus.cancelled) ...[
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Expanded(
@@ -103,7 +103,7 @@ class _OwnerOrderCard extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                SizedBox(width: AppSpacing.sm),
                 TextButton(
                   onPressed: () => _confirmCancel(context, ref),
                   child: Text(
@@ -181,11 +181,11 @@ class _LoadingList extends StatelessWidget {
       baseColor: AppColors.skeletonBase,
       highlightColor: AppColors.skeletonHighlight,
       child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.screenPadding),
+        padding: EdgeInsets.all(AppSpacing.screenPadding),
         itemCount: 5,
         itemBuilder: (_, __) => Container(
           height: 130,
-          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          margin: EdgeInsets.only(bottom: AppSpacing.md),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -204,12 +204,12 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.receipt_long_rounded, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(message, textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
           ],
@@ -228,14 +228,14 @@ class _ErrorState extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(t.t('errorGeneric'), textAlign: TextAlign.center),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
           ],
         ),

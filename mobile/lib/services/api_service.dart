@@ -141,6 +141,17 @@ class ApiService {
     return jsonDecode(res.body) as Map<String, dynamic>;
   }
 
+  /// Returns the existing user record for a phone number, or null if
+  /// no account exists yet (404). Used after OTP verification to check
+  /// whether a returning user already has a role, so we can skip the
+  /// role-select screen.
+  Future<Map<String, dynamic>?> getUserByPhone(String phone) async {
+    final res = await _get('/users/by-phone/$phone');
+    if (res.statusCode == 404) return null;
+    _throwIfError(res);
+    return jsonDecode(res.body) as Map<String, dynamic>;
+  }
+
   // ── Shops ──────────────────────────────────────────────────────
 
   Future<Map<String, dynamic>> createShop({

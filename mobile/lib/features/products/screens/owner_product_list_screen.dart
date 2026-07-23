@@ -43,7 +43,7 @@ class OwnerProductListScreen extends ConsumerWidget {
               return _EmptyState(message: t.t('productsEmpty'));
             }
             return ListView.builder(
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
                 AppSpacing.screenPadding,
                 AppSpacing.screenPadding,
                 AppSpacing.screenPadding,
@@ -82,8 +82,8 @@ class _ProductRow extends ConsumerWidget {
     final t = AppLocalizations.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -92,7 +92,7 @@ class _ProductRow extends ConsumerWidget {
       child: Row(
         children: [
           _Thumbnail(imageUrl: product.imageUrl),
-          const SizedBox(width: AppSpacing.md),
+          SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,11 +206,11 @@ class _LoadingList extends StatelessWidget {
       baseColor: AppColors.skeletonBase,
       highlightColor: AppColors.skeletonHighlight,
       child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.screenPadding),
+        padding: EdgeInsets.all(AppSpacing.screenPadding),
         itemCount: 6,
         itemBuilder: (_, __) => Container(
           height: 76,
-          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+          margin: EdgeInsets.only(bottom: AppSpacing.sm),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -229,12 +229,12 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.inventory_2_outlined, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(message, textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
           ],
@@ -253,14 +253,14 @@ class _ErrorState extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.wifi_off_rounded, size: 48, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(t.t('errorGeneric'), textAlign: TextAlign.center),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             OutlinedButton(onPressed: onRetry, child: Text(t.t('commonRetry'))),
           ],
         ),

@@ -40,49 +40,54 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDF6-PFTKoJJvVi0tLi1qBWgqEp4fWZGd0',
-    appId: '1:977188885752:web:9f42ad5768507a93d8570d',
-    messagingSenderId: '977188885752',
-    projectId: 'mykirana-1e888',
-    authDomain: 'mykirana-1e888.firebaseapp.com',
-    storageBucket: 'mykirana-1e888.firebasestorage.app',
-    measurementId: 'G-FL0K9LVTE8',
-  );
+  // Project: mykirana-b00e1  |  Project number: 663594485566
+  // Package: com.vijaybore.mykirana
+  // App ID (Android): 1:663594485566:android:7f02a2d1698c9cf5dc4e6f
+  // API key matches google-services.json
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBvB0wN-FYoY_vc2PhM9uX_l6XadQ5R-rw',
-    appId: '1:977188885752:android:bdc4fc8c22da13c7d8570d',
-    messagingSenderId: '977188885752',
-    projectId: 'mykirana-1e888',
-    storageBucket: 'mykirana-1e888.firebasestorage.app',
+    apiKey: 'AIzaSyAQtSE9Nc0vmDl8KzUG1ldr9lfL7DXWybg',
+    appId: '1:663594485566:android:7f02a2d1698c9cf5dc4e6f',
+    messagingSenderId: '663594485566',
+    projectId: 'mykirana-b00e1',
+    storageBucket: 'mykirana-b00e1.firebasestorage.app',
+  );
+
+  // Web / Windows / iOS / macOS use the same project.
+  // Update these once you add those platforms in the Firebase console.
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAQtSE9Nc0vmDl8KzUG1ldr9lfL7DXWybg',
+    appId: '1:663594485566:android:7f02a2d1698c9cf5dc4e6f',
+    messagingSenderId: '663594485566',
+    projectId: 'mykirana-b00e1',
+    authDomain: 'mykirana-b00e1.firebaseapp.com',
+    storageBucket: 'mykirana-b00e1.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCXYrg-AxPHcfHBa7LxvlS2FzZe9iy5beQ',
-    appId: '1:977188885752:ios:125db6d1ac80156bd8570d',
-    messagingSenderId: '977188885752',
-    projectId: 'mykirana-1e888',
-    storageBucket: 'mykirana-1e888.firebasestorage.app',
-    iosBundleId: 'com.example.mobile',
+    apiKey: 'AIzaSyAQtSE9Nc0vmDl8KzUG1ldr9lfL7DXWybg',
+    appId: '1:663594485566:android:7f02a2d1698c9cf5dc4e6f',
+    messagingSenderId: '663594485566',
+    projectId: 'mykirana-b00e1',
+    storageBucket: 'mykirana-b00e1.firebasestorage.app',
+    iosBundleId: 'com.vijaybore.mykirana',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCXYrg-AxPHcfHBa7LxvlS2FzZe9iy5beQ',
-    appId: '1:977188885752:ios:125db6d1ac80156bd8570d',
-    messagingSenderId: '977188885752',
-    projectId: 'mykirana-1e888',
-    storageBucket: 'mykirana-1e888.firebasestorage.app',
-    iosBundleId: 'com.example.mobile',
+    apiKey: 'AIzaSyAQtSE9Nc0vmDl8KzUG1ldr9lfL7DXWybg',
+    appId: '1:663594485566:android:7f02a2d1698c9cf5dc4e6f',
+    messagingSenderId: '663594485566',
+    projectId: 'mykirana-b00e1',
+    storageBucket: 'mykirana-b00e1.firebasestorage.app',
+    iosBundleId: 'com.vijaybore.mykirana',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDF6-PFTKoJJvVi0tLi1qBWgqEp4fWZGd0',
-    appId: '1:977188885752:web:af5b8677bc4f0a90d8570d',
-    messagingSenderId: '977188885752',
-    projectId: 'mykirana-1e888',
-    authDomain: 'mykirana-1e888.firebaseapp.com',
-    storageBucket: 'mykirana-1e888.firebasestorage.app',
-    measurementId: 'G-PJ88KSG9MW',
+    apiKey: 'AIzaSyAQtSE9Nc0vmDl8KzUG1ldr9lfL7DXWybg',
+    appId: '1:663594485566:android:7f02a2d1698c9cf5dc4e6f',
+    messagingSenderId: '663594485566',
+    projectId: 'mykirana-b00e1',
+    authDomain: 'mykirana-b00e1.firebaseapp.com',
+    storageBucket: 'mykirana-b00e1.firebasestorage.app',
   );
 }

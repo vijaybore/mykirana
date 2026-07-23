@@ -170,7 +170,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // TODO: check backend if user already has a role -> skip to done
+      // Check backend: if user already has a role, skip role-select and go
+      // straight to done so returning users don't have to re-pick their role.
+      try {
+        final existing = await _api.getUserByPhone(state.phoneNumber);
+        if (existing != null) {
+          final role = UserRoleX.fromApi(existing['role'] as String?);
+          if (role != null) {
+            state = state.copyWith(
+              isLoading: false,
+              role: role,
+              name: existing['name'] as String?,
+              userId: existing['id'] as String,
+              step: AuthStep.done,
+            );
+            return;
+          }
+        }
+      } catch (_) {
+        // If the backend lookup fails (new user / network blip),
+        // fall through to role-select so the user can still register.
+      }
+
       state = state.copyWith(isLoading: false, step: AuthStep.roleSelect);
     } catch (e) {
       state = state.copyWith(

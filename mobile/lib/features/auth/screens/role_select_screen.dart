@@ -57,7 +57,7 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.screenPadding,
           ),
           child: Form(
@@ -65,16 +65,16 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
                 Text(t.t('authRoleTitle'), style: AppTextStyles.h1),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   t.t('authRoleSubtitle'),
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
 
                 _RoleCard(
                   icon: Icons.storefront_rounded,
@@ -83,7 +83,7 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
                   selected: _selectedRole == UserRole.owner,
                   onTap: () => setState(() => _selectedRole = UserRole.owner),
                 ),
-                const SizedBox(height: AppSpacing.md),
+                SizedBox(height: AppSpacing.md),
                 _RoleCard(
                   icon: Icons.shopping_basket_rounded,
                   title: t.t('authRoleCustomerTitle'),
@@ -93,7 +93,7 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
                       setState(() => _selectedRole = UserRole.customer),
                 ),
 
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
 
                 AnimatedSize(
                   duration: const Duration(milliseconds: 200),
@@ -106,7 +106,7 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
                               t.t('authRoleNameLabel'),
                               style: AppTextStyles.label,
                             ),
-                            const SizedBox(height: AppSpacing.sm),
+                            SizedBox(height: AppSpacing.sm),
                             TextFormField(
                               controller: _nameController,
                               textCapitalization: TextCapitalization.words,
@@ -133,7 +133,7 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
                     style: AppTextStyles.bodySmall
                         .copyWith(color: AppColors.danger),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  SizedBox(height: AppSpacing.md),
                 ],
 
                 SizedBox(
@@ -154,7 +154,7 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
                         : Text(t.t('commonNext')),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),
@@ -186,7 +186,7 @@ class _RoleCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: selected ? AppColors.primaryLight : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -210,7 +210,7 @@ class _RoleCard extends StatelessWidget {
                 size: 24,
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
+            SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +224,7 @@ class _RoleCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            SizedBox(width: AppSpacing.sm),
             Icon(
               selected
                   ? Icons.radio_button_checked

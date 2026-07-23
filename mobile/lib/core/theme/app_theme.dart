@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 import '../constants/app_spacing.dart';
+import '../utils/screen_util.dart';
 
 class AppTheme {
   AppTheme._();
@@ -21,7 +22,7 @@ class AppTheme {
         onSurface: AppColors.textPrimary,
       ),
 
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
@@ -47,7 +48,7 @@ class AppTheme {
           foregroundColor: AppColors.textOnAccent,
           disabledBackgroundColor: AppColors.disabledBg,
           disabledForegroundColor: AppColors.disabledText,
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: Size.fromHeight(ScreenUtil.dp(52)),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
@@ -60,7 +61,7 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
           side: const BorderSide(color: AppColors.primary, width: 1.5),
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: Size.fromHeight(ScreenUtil.dp(52)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
@@ -78,7 +79,7 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surface,
-        contentPadding: const EdgeInsets.symmetric(
+        contentPadding: EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
         ),

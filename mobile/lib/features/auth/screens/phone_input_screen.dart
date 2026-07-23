@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/utils/screen_util.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/auth_provider.dart';
 import '../../shared/widgets/language_switcher_pill.dart';
@@ -48,7 +49,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.screenPadding,
           ),
           child: Form(
@@ -56,7 +57,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: AppSpacing.md),
+                SizedBox(height: AppSpacing.md),
                 const Align(
                   alignment: Alignment.centerRight,
                   child: LanguageSwitcherPill(),
@@ -65,22 +66,22 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
 
                 // Logo / brand mark
                 Container(
-                  width: 72,
-                  height: 72,
+                  width: ScreenUtil.dp(72),
+                  height: ScreenUtil.dp(72),
                   decoration: BoxDecoration(
                     color: AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(AppSpacing.lg),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.storefront_rounded,
                     color: AppColors.primary,
-                    size: 36,
+                    size: ScreenUtil.dp(36),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                SizedBox(height: AppSpacing.xl),
 
                 Text(t.t('authWelcomeTitle'), style: AppTextStyles.h1),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   t.t('authWelcomeSubtitle'),
                   style: AppTextStyles.bodyLarge.copyWith(
@@ -88,10 +89,10 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                   ),
                 ),
 
-                const SizedBox(height: AppSpacing.xxl),
+                SizedBox(height: AppSpacing.xxl),
 
                 Text(t.t('authPhoneLabel'), style: AppTextStyles.label),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
 
                 TextFormField(
                   controller: _phoneController,
@@ -105,7 +106,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                   decoration: InputDecoration(
                     hintText: t.t('authPhoneHint'),
                     prefixIcon: Padding(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
                         vertical: AppSpacing.md,
                       ),
@@ -123,10 +124,10 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                 ),
 
                 if (authState.errorMessage != null) ...[
-                  const SizedBox(height: AppSpacing.md),
+                  SizedBox(height: AppSpacing.md),
                   if (authState.errorMessage == 'PAYWALL')
                     Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
+                      padding: EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         color: AppColors.danger.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -136,7 +137,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Icon(Icons.error_outline, color: AppColors.danger, size: 20),
-                          const SizedBox(width: AppSpacing.sm),
+                          SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: Text(
                               "Subscription required to register a shop: ₹500/month.",
@@ -171,7 +172,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                         : Text(t.t('authSendOtp')),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
 
                 Center(
                   child: Text(
@@ -180,7 +181,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                     style: AppTextStyles.caption,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),

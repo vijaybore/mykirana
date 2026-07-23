@@ -93,7 +93,7 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: EdgeInsets.all(AppSpacing.lg),
                 color: Colors.black54,
                 child: Text(
                   t.t('shopLinkScanning'),
@@ -118,17 +118,17 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.screenPadding),
+          padding: EdgeInsets.all(AppSpacing.screenPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: AppSpacing.md),
+              SizedBox(height: AppSpacing.md),
               Text(
                 t.t('shopLinkSubtitle'),
                 style: AppTextStyles.bodyMedium
                     .copyWith(color: AppColors.textSecondary),
               ),
-              const SizedBox(height: AppSpacing.xl),
+              SizedBox(height: AppSpacing.xl),
 
               // Primary action: scan
               SizedBox(
@@ -140,12 +140,12 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
               Row(
                 children: [
                   const Expanded(child: Divider()),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                     ),
                     child: Text(t.t('shopLinkOr'), style: AppTextStyles.caption),
@@ -153,10 +153,10 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
                   const Expanded(child: Divider()),
                 ],
               ),
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
 
               Text(t.t('shopLinkCodeLabel'), style: AppTextStyles.label),
-              const SizedBox(height: AppSpacing.sm),
+              SizedBox(height: AppSpacing.sm),
               TextField(
                 controller: _codeController,
                 textCapitalization: TextCapitalization.characters,
@@ -167,7 +167,7 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
               ),
 
               if (actionState.errorMessage != null) ...[
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   t.t(actionState.errorMessage!),
                   style: AppTextStyles.bodySmall
@@ -175,7 +175,7 @@ class _ShopLinkScreenState extends ConsumerState<ShopLinkScreen> {
                 ),
               ],
 
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(

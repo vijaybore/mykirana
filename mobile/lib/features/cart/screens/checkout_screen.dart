@@ -4,6 +4,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/utils/screen_util.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../models/order_models.dart';
 import '../../../providers/session_provider.dart';
@@ -126,13 +127,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.screenPadding),
+                padding: EdgeInsets.all(AppSpacing.screenPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (ref.watch(sessionProvider).userId == null) ...[
-                      const Text('Your Details', style: AppTextStyles.h3),
-                      const SizedBox(height: AppSpacing.sm),
+                      Text('Your Details', style: AppTextStyles.h3),
+                      SizedBox(height: AppSpacing.sm),
                       Form(
                         key: _formKey,
                         child: Column(
@@ -145,14 +146,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                               ),
                               validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter your name' : null,
                             ),
-                            const SizedBox(height: AppSpacing.sm),
+                            SizedBox(height: AppSpacing.sm),
                             TextFormField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 hintText: t.t('authPhoneHint'),
-                                prefixIcon: const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
+                                prefixIcon: Padding(padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
                                   child: Text('+91', style: AppTextStyles.bodyLarge),
                                 ),
                                 prefixIconConstraints: const BoxConstraints(minWidth: 0),
@@ -162,11 +162,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xl),
+                      SizedBox(height: AppSpacing.xl),
                     ],
 
                     Text(t.t('checkoutFulfillment'), style: AppTextStyles.h3),
-                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(height: AppSpacing.md),
                     Row(
                       children: [
                         Expanded(
@@ -178,7 +178,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                 setState(() => _fulfillmentType = FulfillmentType.pickup),
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.sm),
+                        SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: _FulfillmentOption(
                             icon: Icons.two_wheeler_outlined,
@@ -190,10 +190,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.xl),
+                    SizedBox(height: AppSpacing.xl),
 
                     Text(t.t('checkoutPaymentMode'), style: AppTextStyles.h3),
-                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(height: AppSpacing.md),
 
                     _PaymentOption(
                       icon: Icons.payments_outlined,
@@ -202,7 +202,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       selected: _mode == PaymentMode.cash,
                       onTap: () => setState(() => _mode = PaymentMode.cash),
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     _PaymentOption(
                       icon: Icons.qr_code_rounded,
                       title: t.t('checkoutUpi'),
@@ -210,7 +210,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       selected: _mode == PaymentMode.upi,
                       onTap: () => setState(() => _mode = PaymentMode.upi),
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     _PaymentOption(
                       icon: Icons.receipt_long_rounded,
                       title: t.t('checkoutUdhari'),
@@ -220,7 +220,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ),
 
                     if (_mode == PaymentMode.upi) ...[
-                      const SizedBox(height: AppSpacing.lg),
+                      SizedBox(height: AppSpacing.lg),
                       shopDetailsAsync.when(
                         loading: () => const Center(child: CircularProgressIndicator()),
                         error: (_, __) => const SizedBox.shrink(),
@@ -246,7 +246,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                           ).toString();
                           return Center(
                             child: Container(
-                              padding: const EdgeInsets.all(AppSpacing.lg),
+                              padding: EdgeInsets.all(AppSpacing.lg),
                               decoration: BoxDecoration(
                                 color: AppColors.surface,
                                 borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -255,12 +255,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                               child: Column(
                                 children: [
                                   Text(t.t('checkoutUpiQrTitle'), style: AppTextStyles.label),
-                                  const SizedBox(height: AppSpacing.md),
+                                  SizedBox(height: AppSpacing.md),
                                   QrImageView(
-                                      data: upiUri, size: 160, backgroundColor: Colors.white),
-                                  const SizedBox(height: AppSpacing.sm),
+                                      data: upiUri, size: ScreenUtil.dp(160), backgroundColor: Colors.white),
+                                  SizedBox(height: AppSpacing.sm),
                                   Text(upiId, style: AppTextStyles.bodyMedium),
-                                  const SizedBox(height: AppSpacing.xs),
+                                  SizedBox(height: AppSpacing.xs),
                                   Text(
                                     t.t('checkoutUpiQrNote'),
                                     textAlign: TextAlign.center,
@@ -275,7 +275,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ],
 
                     if (checkoutState.errorMessage != null) ...[
-                      const SizedBox(height: AppSpacing.md),
+                      SizedBox(height: AppSpacing.md),
                       Text(
                         t.t(checkoutState.errorMessage!),
                         style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
@@ -286,11 +286,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    padding: EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: AppColors.primaryLight,
                       borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -303,7 +303,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  SizedBox(height: AppSpacing.md),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -351,7 +351,7 @@ class _FulfillmentOption extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
         decoration: BoxDecoration(
           color: selected ? AppColors.primaryLight : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -399,7 +399,7 @@ class _PaymentOption extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: selected ? AppColors.primaryLight : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -411,7 +411,7 @@ class _PaymentOption extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: selected ? AppColors.primary : AppColors.textSecondary),
-            const SizedBox(width: AppSpacing.md),
+            SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,26 +442,26 @@ class _OrderPlacedView extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.screenPadding),
+          padding: EdgeInsets.all(AppSpacing.screenPadding),
           child: Column(
             children: [
               const Spacer(),
               Container(
-                width: 72,
-                height: 72,
+                width: ScreenUtil.dp(72),
+                height: ScreenUtil.dp(72),
                 decoration:
                     const BoxDecoration(color: AppColors.udhariClearBg, shape: BoxShape.circle),
                 child: const Icon(Icons.check_rounded, color: AppColors.udhariClear, size: 40),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
               Text(t.t('orderPlacedTitle'), style: AppTextStyles.h2, textAlign: TextAlign.center),
-              const SizedBox(height: AppSpacing.xs),
+              SizedBox(height: AppSpacing.xs),
               Text(
                 t.t('orderPlacedSubtitle'),
                 textAlign: TextAlign.center,
                 style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
               Text('₹${order.total.toStringAsFixed(0)}', style: AppTextStyles.balanceAmount),
               const Spacer(),
               SizedBox(
@@ -472,7 +472,7 @@ class _OrderPlacedView extends StatelessWidget {
                   child: Text(t.t('orderPlacedContinueShopping')),
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
             ],
           ),
         ),

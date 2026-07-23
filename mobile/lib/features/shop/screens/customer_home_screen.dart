@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/utils/screen_util.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/session_provider.dart';
 import '../../cart/providers/cart_provider.dart';
@@ -41,11 +42,11 @@ class CustomerHomeScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.screenPadding),
+          padding: EdgeInsets.all(AppSpacing.screenPadding),
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -66,11 +67,11 @@ class CustomerHomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg),
 
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: balance > 0 ? AppColors.udhariOwingBg : AppColors.udhariClearBg,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -94,7 +95,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
+            SizedBox(height: AppSpacing.xl),
 
             _NavCard(
               icon: Icons.storefront_outlined,
@@ -104,7 +105,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                 MaterialPageRoute(builder: (_) => const CustomerBrowseScreen()),
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             _NavCard(
               icon: Icons.shopping_cart_outlined,
               title: t.t('cartTitle'),
@@ -112,7 +113,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                 MaterialPageRoute(builder: (_) => const CartScreen()),
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             _NavCard(
               icon: Icons.menu_book_rounded,
               title: t.t('customerHomeMyUdhari'),
@@ -120,7 +121,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                 MaterialPageRoute(builder: (_) => const MyUdhariScreen()),
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             _NavCard(
               icon: Icons.receipt_long_rounded,
               title: t.t('customerHomeMyOrders'),
@@ -148,7 +149,7 @@ class _NavCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -157,15 +158,15 @@ class _NavCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: ScreenUtil.dp(44),
+              height: ScreenUtil.dp(44),
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Icon(icon, color: AppColors.primary),
             ),
-            const SizedBox(width: AppSpacing.md),
+            SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(title,
                   style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
@@ -181,7 +182,7 @@ class _NavCard extends StatelessWidget {
                     style: const TextStyle(
                         color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700)),
               ),
-              const SizedBox(width: AppSpacing.sm),
+              SizedBox(width: AppSpacing.sm),
             ],
             const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
           ],

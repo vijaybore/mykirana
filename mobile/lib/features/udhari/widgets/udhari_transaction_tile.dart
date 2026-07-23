@@ -30,7 +30,7 @@ class UdhariTransactionTile extends StatelessWidget {
         : t.t('udhariPaymentReceived');
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,7 +47,7 @@ class UdhariTransactionTile extends StatelessWidget {
               color: color,
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +58,7 @@ class UdhariTransactionTile extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     )),
                     if (pendingSync) ...[
-                      const SizedBox(width: AppSpacing.xs),
+                      SizedBox(width: AppSpacing.xs),
                       const Icon(Icons.cloud_off_rounded,
                           size: 14, color: AppColors.textMuted),
                     ],

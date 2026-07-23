@@ -21,15 +21,15 @@ class CartScreen extends ConsumerWidget {
       body: lines.isEmpty
           ? Center(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
+                padding: EdgeInsets.all(AppSpacing.xl),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.shopping_cart_outlined,
                         size: 48, color: AppColors.textMuted),
-                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(height: AppSpacing.md),
                     Text(t.t('cartEmpty'), style: AppTextStyles.h3),
-                    const SizedBox(height: AppSpacing.xs),
+                    SizedBox(height: AppSpacing.xs),
                     Text(
                       t.t('cartEmptySubtitle'),
                       style: AppTextStyles.bodyMedium
@@ -40,13 +40,13 @@ class CartScreen extends ConsumerWidget {
               ),
             )
           : ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.screenPadding),
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
               itemCount: lines.length,
               itemBuilder: (context, i) {
                 final line = lines[i];
                 return Container(
-                  margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  margin: EdgeInsets.only(bottom: AppSpacing.sm),
+                  padding: EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -103,7 +103,7 @@ class CartScreen extends ConsumerWidget {
           ? null
           : SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -114,7 +114,7 @@ class CartScreen extends ConsumerWidget {
                         Text('₹${total.toStringAsFixed(0)}', style: AppTextStyles.priceLarge),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(height: AppSpacing.sm),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(

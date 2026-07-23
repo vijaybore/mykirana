@@ -38,7 +38,7 @@ class LanguageSwitcherPill extends ConsumerWidget {
                 .setLocale(Locale(opt.code)),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(
+              padding: EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
                 vertical: 6,
               ),

@@ -76,11 +76,11 @@ class _AddUdhariEntrySheetState extends State<AddUdhariEntrySheet> {
       duration: const Duration(milliseconds: 150),
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
         ),
-        padding: const EdgeInsets.fromLTRB(
+        padding: EdgeInsets.fromLTRB(
           AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.xl,
         ),
         child: Column(
@@ -91,7 +91,7 @@ class _AddUdhariEntrySheetState extends State<AddUdhariEntrySheet> {
               child: Container(
                 width: 36,
                 height: 4,
-                margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                margin: EdgeInsets.only(bottom: AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppColors.border,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -99,7 +99,7 @@ class _AddUdhariEntrySheetState extends State<AddUdhariEntrySheet> {
               ),
             ),
             Text(widget.customerName, style: AppTextStyles.h3),
-            const SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg),
 
             // Tappable type cards, not a dropdown — matches "e-commerce
             // interactive" direction (payment mode selector pattern).
@@ -114,7 +114,7 @@ class _AddUdhariEntrySheetState extends State<AddUdhariEntrySheet> {
                     onTap: () => setState(() => _type = UdhariType.credit),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: _TypeCard(
                     icon: Icons.south_west_rounded,
@@ -126,10 +126,10 @@ class _AddUdhariEntrySheetState extends State<AddUdhariEntrySheet> {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg),
 
             Text(t.t('udhariAmountLabel'), style: AppTextStyles.label),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             TextField(
               controller: _amountController,
               autofocus: true,
@@ -141,16 +141,16 @@ class _AddUdhariEntrySheetState extends State<AddUdhariEntrySheet> {
                 hintText: t.t('udhariAmountHint'),
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg),
 
             Text(t.t('udhariNoteLabel'), style: AppTextStyles.label),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             TextField(
               controller: _noteController,
               style: AppTextStyles.bodyLarge,
               decoration: InputDecoration(hintText: t.t('udhariNoteHint')),
             ),
-            const SizedBox(height: AppSpacing.xl),
+            SizedBox(height: AppSpacing.xl),
 
             SizedBox(
               width: double.infinity,
@@ -197,7 +197,7 @@ class _TypeCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.md),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
         decoration: BoxDecoration(
           color: selected ? color.withValues(alpha: 0.1) : AppColors.background,
           borderRadius: BorderRadius.circular(AppRadius.md),
@@ -209,7 +209,7 @@ class _TypeCard extends StatelessWidget {
         child: Column(
           children: [
             Icon(icon, color: selected ? color : AppColors.textSecondary),
-            const SizedBox(height: AppSpacing.xs),
+            SizedBox(height: AppSpacing.xs),
             Text(
               label,
               textAlign: TextAlign.center,

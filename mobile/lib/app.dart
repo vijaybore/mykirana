@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/screen_util.dart';
 import 'localization/app_localizations.dart';
 import 'providers/auth_provider.dart' show UserRole;
 import 'providers/locale_provider.dart';
@@ -71,6 +72,9 @@ class MyApp extends ConsumerWidget {
       ],
       initialRoute: _resolveInitialRoute(session),
       builder: (context, child) {
+        // Initialise responsive scale factors from the real MediaQuery.
+        // This must happen inside builder so MediaQuery is available.
+        ScreenUtil.init(MediaQuery.of(context));
         return Container(
           color: const Color(0xFFE5E7E3),
           child: Center(

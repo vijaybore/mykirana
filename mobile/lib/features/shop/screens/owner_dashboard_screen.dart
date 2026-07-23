@@ -57,11 +57,11 @@ class OwnerDashboardScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.screenPadding),
+          padding: EdgeInsets.all(AppSpacing.screenPadding),
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -86,7 +86,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg),
 
             Row(
               children: [
@@ -97,7 +97,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                     color: AppColors.accent,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: _StatCard(
                     label: t.t('udhariTotalOwed'),
@@ -107,7 +107,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.xl),
+            SizedBox(height: AppSpacing.xl),
 
             _NavCard(
               icon: Icons.receipt_long_rounded,
@@ -116,7 +116,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                 MaterialPageRoute(builder: (_) => const OwnerOrdersScreen()),
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             _NavCard(
               icon: Icons.inventory_2_outlined,
               title: t.t('dashboardManageProducts'),
@@ -124,7 +124,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                 MaterialPageRoute(builder: (_) => const OwnerProductListScreen()),
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             _NavCard(
               icon: Icons.menu_book_rounded,
               title: t.t('dashboardViewUdhari'),
@@ -132,7 +132,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                 MaterialPageRoute(builder: (_) => const UdhariCustomerListScreen()),
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             _NavCard(
               icon: Icons.qr_code_rounded,
               title: t.t('dashboardViewShopQr'),
@@ -140,7 +140,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
                 MaterialPageRoute(builder: (_) => const ShopQrScreen()),
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             _NavCard(
               icon: Icons.storefront_outlined,
               title: t.t('dashboardEditShop'),
@@ -164,7 +164,7 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -194,7 +194,7 @@ class _NavCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -211,7 +211,7 @@ class _NavCard extends StatelessWidget {
               ),
               child: Icon(icon, color: AppColors.primary),
             ),
-            const SizedBox(width: AppSpacing.md),
+            SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(title,
                   style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),

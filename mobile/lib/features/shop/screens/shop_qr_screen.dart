@@ -24,9 +24,9 @@ class ShopQrScreen extends ConsumerWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.screenPadding),
+            padding: EdgeInsets.all(AppSpacing.screenPadding),
             child: Container(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              padding: EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -36,9 +36,9 @@ class ShopQrScreen extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(session.shopName ?? '', style: AppTextStyles.h3),
-                  const SizedBox(height: AppSpacing.lg),
+                  SizedBox(height: AppSpacing.lg),
                   QrImageView(data: shopCode, size: 220, backgroundColor: Colors.white),
-                  const SizedBox(height: AppSpacing.lg),
+                  SizedBox(height: AppSpacing.lg),
                   Text(t.t('shopCodeLabel'), style: AppTextStyles.label),
                   const SizedBox(height: 4),
                   Text(shopCode, style: AppTextStyles.h1.copyWith(letterSpacing: 2)),

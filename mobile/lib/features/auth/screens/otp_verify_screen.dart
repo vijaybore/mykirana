@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/utils/screen_util.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/session_provider.dart';
@@ -91,17 +92,18 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
           Navigator.of(context).pushNamed('/auth/role');
         }
       }
-      // When auto-login completes for owner, navigate to shop setup
+      // When login completes (either via auto-owner flow from welcome screen
+      // or via backend returning-user detection), navigate to the right home.
       if (next.step == AuthStep.done && previous?.step != AuthStep.done) {
-        final sessionRole = ref.read(sessionProvider).role;
-        if (sessionRole == UserRole.owner) {
-          ref.read(sessionProvider.notifier).setUser(
-                userId: next.userId!,
-                role: next.role!,
-              );
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil('/owner/shop-setup', (r) => false);
-        }
+        // Persist session for the returning user.
+        ref.read(sessionProvider.notifier).setUser(
+              userId: next.userId!,
+              role: next.role!,
+            );
+        final route = next.role == UserRole.owner
+            ? '/owner/shop-setup'
+            : '/customer/shop-link';
+        Navigator.of(context).pushNamedAndRemoveUntil(route, (r) => false);
       }
       // Clear boxes on a fresh error so the user can retype immediately
       if (next.errorMessage != null && previous?.errorMessage == null) {
@@ -125,15 +127,15 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.screenPadding,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: AppSpacing.lg),
               Text(t.t('authOtpTitle'), style: AppTextStyles.h1),
-              const SizedBox(height: AppSpacing.sm),
+              SizedBox(height: AppSpacing.sm),
               RichText(
                 text: TextSpan(
                   style: AppTextStyles.bodyLarge.copyWith(
@@ -151,7 +153,7 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              SizedBox(height: AppSpacing.md),
 
               GestureDetector(
                 onTap: () {
@@ -168,15 +170,15 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.xxl),
+              SizedBox(height: AppSpacing.xxl),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(6, (index) {
                   final hasError = authState.errorMessage != null;
                   return SizedBox(
-                    width: 46,
-                    height: 56,
+                    width: ScreenUtil.dp(46),
+                    height: ScreenUtil.dp(56),
                     child: TextField(
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
@@ -211,7 +213,7 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
               ),
 
               if (authState.errorMessage != null) ...[
-                const SizedBox(height: AppSpacing.md),
+                SizedBox(height: AppSpacing.md),
                 Text(
                   t.t(authState.errorMessage!),
                   style: AppTextStyles.bodySmall.copyWith(
@@ -220,13 +222,13 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                 ),
               ],
 
-              const SizedBox(height: AppSpacing.xl),
+              SizedBox(height: AppSpacing.xl),
 
               if (authState.isLoading)
-                const Center(
+                Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                    child: const CircularProgressIndicator(strokeWidth: 2.5),
                   ),
                 )
               else
