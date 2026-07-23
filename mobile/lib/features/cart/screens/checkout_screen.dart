@@ -78,7 +78,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
     // If guest, create their profile on the backend first
     if (session.userId == null) {
-      ref.read(checkoutProvider.notifier).state = const CheckoutState(isLoading: true);
+      ref.read(checkoutProvider.notifier).setLoading(true);
       try {
         final user = await ref.read(authProvider.notifier).upsertGuestUser(
           name: _nameController.text.trim(),
@@ -87,7 +87,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         customerId = user['id'];
         ref.read(sessionProvider.notifier).setUser(userId: customerId, role: UserRole.customer);
       } catch (e) {
-        ref.read(checkoutProvider.notifier).state = const CheckoutState(isLoading: false, errorMessage: 'Failed to create customer profile');
+        ref.read(checkoutProvider.notifier).setError('Failed to create customer profile');
         return;
       }
     }
@@ -131,7 +131,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (ref.watch(sessionProvider).userId == null) ...[
-                      Text('Your Details', style: AppTextStyles.h3),
+                      const Text('Your Details', style: AppTextStyles.h3),
                       const SizedBox(height: AppSpacing.sm),
                       Form(
                         key: _formKey,
@@ -151,8 +151,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                               keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 hintText: t.t('authPhoneHint'),
-                                prefixIcon: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
+                                prefixIcon: const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
                                   child: Text('+91', style: AppTextStyles.bodyLarge),
                                 ),
                                 prefixIconConstraints: const BoxConstraints(minWidth: 0),

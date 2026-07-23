@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "977188885752",
-    "project_id": "mykirana-1e888",
-    "storage_bucket": "mykirana-1e888.firebasestorage.app"
+    "project_number": "663594485566",
+    "project_id": "mykirana-b00e1",
+    "storage_bucket": "mykirana-b00e1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:977188885752:android:bdc4fc8c22da13c7d8570d",
+        "mobilesdk_app_id": "1:663594485566:android:7f02a2d1698c9cf5dc4e6f",
         "android_client_info": {
           "package_name": "com.vijaybore.mykirana"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBvB0wN-FYoY_vc2PhM9uX_l6XadQ5R-rw"
+          "current_key": "AIzaSyAQtSE9Nc0vmDl8KzUG1ldr9lfL7DXWybg"
         }
       ],
       "services": {

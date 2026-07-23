@@ -148,6 +148,14 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
 
   final ApiService _api;
 
+  void setLoading(bool loading) {
+    state = state.copyWith(isLoading: loading);
+  }
+
+  void setError(String message) {
+    state = state.copyWith(isLoading: false, errorMessage: message);
+  }
+
   Future<Order?> placeOrder({
     required String shopId,
     required String customerId,
@@ -173,6 +181,7 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
   }
 }
 
+ 
 final checkoutProvider = StateNotifierProvider<CheckoutNotifier, CheckoutState>(
   (ref) => CheckoutNotifier(ref.watch(_apiServiceProvider)),
 );

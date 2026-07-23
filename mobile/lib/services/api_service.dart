@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 
 /// Picks a sensible default backend URL per platform, so switching
@@ -18,8 +17,7 @@ import 'package:http/http.dart' as http;
 ///   explicit baseUrl (your LAN IP, or the deployed backend URL) when
 ///   constructing ApiService in that case.
 String _defaultBaseUrl() {
-  if (kIsWeb) return 'http://localhost:4000';
-  return 'http://10.0.2.2:4000';
+  return 'https://mykirana.onrender.com';
 }
 
 /// Thin wrapper around the MyKirana backend REST API.
