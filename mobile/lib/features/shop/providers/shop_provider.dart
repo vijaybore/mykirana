@@ -67,6 +67,7 @@ class ShopActionNotifier extends StateNotifier<ShopActionState> {
     String? contactPhone,
     String? shopImageUrl,
     String? upiQrImageUrl,
+    String? shopCode,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
@@ -78,6 +79,7 @@ class ShopActionNotifier extends StateNotifier<ShopActionState> {
         contactPhone: contactPhone,
         shopImageUrl: shopImageUrl,
         upiQrImageUrl: upiQrImageUrl,
+        shopCode: shopCode,
       );
       state = state.copyWith(isLoading: false);
       return shop;

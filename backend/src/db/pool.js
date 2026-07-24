@@ -76,6 +76,11 @@ function mockQuery(text, params = []) {
 
   if (sql.includes('FROM shops') && sql.includes('shop_code =')) {
     const code = params[0];
+    if (sql.includes('<>')) {
+      const currentId = params[1];
+      const shop = store.shops.find((s) => s.shop_code === code && s.id !== currentId);
+      return { rows: shop ? [shop] : [] };
+    }
     const shop = store.shops.find((s) => s.shop_code === code);
     return { rows: shop ? [shop] : [] };
   }
@@ -117,6 +122,7 @@ function mockQuery(text, params = []) {
       if (params[3] !== undefined) shop.contact_phone = params[3];
       if (params[4] !== undefined) shop.shop_image_url = params[4];
       if (params[5] !== undefined) shop.upi_qr_image_url = params[5];
+      if (params[6] !== undefined) shop.shop_code = params[6];
     }
     return { rows: shop ? [shop] : [] };
   }
@@ -333,6 +339,36 @@ module.exports = {
       }
     }
     return mockQuery(text, params);
+  },
+  async cleanTestData(testPhones) {
+    if (useMemory) {
+      // Find user IDs to delete
+      const userIdsToDelete = store.users
+        .filter((u) => testPhones.includes((u.phone || '').replace(/\D/g, '')))
+        .map((u) => u.id);
+
+      store.users = store.users.filter(
+        (u) => !testPhones.includes((u.phone || '').replace(/\D/g, ''))
+      );
+      store.shops = store.shops.filter((s) => !userIdsToDelete.includes(s.owner_id));
+      store.customer_shop_links = store.customer_shop_links.filter(
+        (l) => !userIdsToDelete.includes(l.customer_id)
+      );
+      store.udhari_transactions = store.udhari_transactions.filter(
+        (t) => !userIdsToDelete.includes(t.customer_id)
+      );
+      store.orders = store.orders.filter((o) => !userIdsToDelete.includes(o.customer_id));
+      store.products = store.products.filter((p) => !userIdsToDelete.includes(p.shop_id));
+      store.categories = store.categories.filter((c) => !userIdsToDelete.includes(c.shop_id));
+    } else if (realPool) {
+      // Postgres: delete from users, references will cascade delete
+      await realPool.query(
+        `DELETE FROM users 
+         WHERE regexp_replace(phone, '\\D', '', 'g') = ANY($1)
+            OR phone = ANY($1)`,
+        [testPhones]
+      );
+    }
   },
   async end() {
     if (realPool) {

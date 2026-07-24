@@ -24,6 +24,7 @@ class ShopEditScreen extends ConsumerStatefulWidget {
 class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _codeController = TextEditingController();
   final _addressController = TextEditingController();
   final _upiController = TextEditingController();
   final _contactController = TextEditingController();
@@ -35,6 +36,7 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _codeController.dispose();
     _addressController.dispose();
     _upiController.dispose();
     _contactController.dispose();
@@ -44,6 +46,7 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
   void _prefillFrom(Map<String, dynamic> shop) {
     if (_prefilled) return;
     _nameController.text = shop['shop_name'] as String? ?? '';
+    _codeController.text = shop['shop_code'] as String? ?? '';
     _addressController.text = shop['address'] as String? ?? '';
     _upiController.text = shop['business_upi_id'] as String? ?? '';
     _contactController.text = shop['contact_phone'] as String? ?? '';
@@ -75,6 +78,7 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
     final shop = await ref.read(shopActionProvider.notifier).updateShop(
           shopId: shopId,
           shopName: _nameController.text.trim(),
+          shopCode: _codeController.text.trim().toUpperCase(),
           address: _addressController.text.trim(),
           businessUpiId:
               _upiController.text.trim().isEmpty ? null : _upiController.text.trim(),
@@ -86,6 +90,7 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
         );
 
     if (shop != null && mounted) {
+      final oldShopCode = session.shopCode;
       // Keep session in sync — the dashboard header reads shopName
       // straight from session, not from a re-fetch.
       ref.read(sessionProvider.notifier).setLinkedShop(
@@ -93,6 +98,9 @@ class _ShopEditScreenState extends ConsumerState<ShopEditScreen> {
             shopName: shop['shop_name'] as String,
             shopCode: shop['shop_code'] as String,
           );
+      if (oldShopCode != null) {
+        ref.invalidate(shopDetailsProvider(oldShopCode));
+      }
       ref.invalidate(shopDetailsProvider(shop['shop_code'] as String));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(t.t('shopEditSaved'))),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 /// Picks a sensible default backend URL per platform, so switching
@@ -17,6 +18,21 @@ import 'package:http/http.dart' as http;
 ///   explicit baseUrl (your LAN IP, or the deployed backend URL) when
 ///   constructing ApiService in that case.
 String _defaultBaseUrl() {
+  if (kDebugMode) {
+    if (kIsWeb) {
+      return 'http://localhost:4000';
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return 'http://10.0.2.2:4000';
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+      case TargetPlatform.windows:
+        return 'http://localhost:4000';
+      default:
+        break;
+    }
+  }
   return 'https://mykirana.onrender.com';
 }
 
@@ -184,6 +200,7 @@ class ApiService {
     String? contactPhone,
     String? shopImageUrl,
     String? upiQrImageUrl,
+    String? shopCode,
   }) async {
     final res = await _put('/shops/$id', {
       'shopName': shopName,
@@ -192,6 +209,7 @@ class ApiService {
       'contactPhone': contactPhone,
       'shopImageUrl': shopImageUrl,
       'upiQrImageUrl': upiQrImageUrl,
+      'shopCode': shopCode,
     });
     _throwIfError(res);
     return jsonDecode(res.body) as Map<String, dynamic>;

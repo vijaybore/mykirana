@@ -47,10 +47,28 @@ class _RoleSelectScreenState extends ConsumerState<RoleSelectScreen> {
               role: next.role!,
             );
 
-        final route = next.role == UserRole.owner
-            ? '/owner/shop-setup'
-            : '/customer/shop-link';
-        Navigator.of(context).pushNamedAndRemoveUntil(route, (r) => false);
+        if (next.role == UserRole.owner) {
+          if (next.shopId != null &&
+              next.shopName != null &&
+              next.shopCode != null) {
+            // Owner already has a shop (edge case: second device selected
+            // role after shop was already created) — hydrate session and
+            // go straight to the dashboard.
+            ref.read(session.sessionProvider.notifier).setLinkedShop(
+                  shopId: next.shopId!,
+                  shopName: next.shopName!,
+                  shopCode: next.shopCode!,
+                );
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/owner/dashboard', (r) => false);
+          } else {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/owner/shop-setup', (r) => false);
+          }
+        } else {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/customer/shop-link', (r) => false);
+        }
       }
     });
 

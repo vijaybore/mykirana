@@ -109,10 +109,29 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen>
               userId: next.userId!,
               role: next.role!,
             );
-        final route = next.role == UserRole.owner
-            ? '/owner/shop-setup'
-            : '/customer/shop-link';
-        Navigator.of(context).pushNamedAndRemoveUntil(route, (r) => false);
+        if (next.role == UserRole.owner) {
+          if (next.shopId != null &&
+              next.shopName != null &&
+              next.shopCode != null) {
+            // Owner already has a shop on the server — hydrate the local
+            // session so any screen can read shopId/code without an extra
+            // round-trip, then go straight to the dashboard.
+            ref.read(sessionProvider.notifier).setLinkedShop(
+                  shopId: next.shopId!,
+                  shopName: next.shopName!,
+                  shopCode: next.shopCode!,
+                );
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/owner/dashboard', (r) => false);
+          } else {
+            // New owner — no shop yet, let them create one.
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/owner/shop-setup', (r) => false);
+          }
+        } else {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/customer/shop-link', (r) => false);
+        }
       }
       if (next.errorMessage != null && previous?.errorMessage == null) {
         _clearOtp();

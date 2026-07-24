@@ -40,6 +40,16 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'ownerId and shopName are required' });
   }
 
+  // Check if owner already has a shop to prevent duplicate shops
+  try {
+    const existing = await pool.query('SELECT * FROM shops WHERE owner_id = $1', [ownerId]);
+    if (existing.rows.length > 0) {
+      return res.status(200).json(existing.rows[0]);
+    }
+  } catch (err) {
+    console.error('Error checking existing shop:', err);
+  }
+
   // Check if owner's phone is whitelisted
   let isWhitelisted = false;
   try {
@@ -147,7 +157,27 @@ router.put('/:id', async (req, res) => {
     contactPhone,
     shopImageUrl,
     upiQrImageUrl,
+    shopCode,
   } = req.body;
+
+  let cleanCode = null;
+  if (shopCode !== undefined && shopCode !== null) {
+    cleanCode = shopCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (cleanCode.length < 3) {
+      return res.status(400).json({ error: 'Shop code must be at least 3 characters long.' });
+    }
+    try {
+      const conflict = await pool.query(
+        'SELECT id FROM shops WHERE shop_code = $1 AND id <> $2',
+        [cleanCode, req.params.id]
+      );
+      if (conflict.rows.length > 0) {
+        return res.status(400).json({ error: 'Shop code is already in use.' });
+      }
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
 
   const result = await pool.query(
     `UPDATE shops
@@ -156,8 +186,9 @@ router.put('/:id', async (req, res) => {
          business_upi_id = COALESCE($3, business_upi_id),
          contact_phone = COALESCE($4, contact_phone),
          shop_image_url = COALESCE($5, shop_image_url),
-         upi_qr_image_url = COALESCE($6, upi_qr_image_url)
-     WHERE id = $7
+         upi_qr_image_url = COALESCE($6, upi_qr_image_url),
+         shop_code = COALESCE($7, shop_code)
+     WHERE id = $8
      RETURNING *`,
     [
       shopName || null,
@@ -166,6 +197,7 @@ router.put('/:id', async (req, res) => {
       contactPhone || null,
       shopImageUrl || null,
       upiQrImageUrl || null,
+      cleanCode || null,
       req.params.id,
     ]
   );

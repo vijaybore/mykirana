@@ -39,6 +39,11 @@ class AuthState {
     this.userId,
     this.verificationId,
     this.resendCooldownSeconds = 0,
+    // Populated when the owner already has a shop, so navigation
+    // listeners can go straight to the dashboard instead of shop-setup.
+    this.shopId,
+    this.shopName,
+    this.shopCode,
   });
 
   final AuthStep step;
@@ -50,6 +55,9 @@ class AuthState {
   final String? userId;
   final String? verificationId;
   final int resendCooldownSeconds;
+  final String? shopId;
+  final String? shopName;
+  final String? shopCode;
 
   AuthState copyWith({
     AuthStep? step,
@@ -62,6 +70,9 @@ class AuthState {
     String? userId,
     String? verificationId,
     int? resendCooldownSeconds,
+    String? shopId,
+    String? shopName,
+    String? shopCode,
   }) {
     return AuthState(
       step: step ?? this.step,
@@ -74,6 +85,9 @@ class AuthState {
       verificationId: verificationId ?? this.verificationId,
       resendCooldownSeconds:
           resendCooldownSeconds ?? this.resendCooldownSeconds,
+      shopId: shopId ?? this.shopId,
+      shopName: shopName ?? this.shopName,
+      shopCode: shopCode ?? this.shopCode,
     );
   }
 }
@@ -177,11 +191,35 @@ class AuthNotifier extends StateNotifier<AuthState> {
         if (existing != null) {
           final role = UserRoleX.fromApi(existing['role'] as String?);
           if (role != null) {
+            final userId = existing['id'] as String;
+
+            // For owners: check whether a shop already exists so the
+            // navigation listener can route directly to the dashboard
+            // instead of always landing on shop-setup (which caused a
+            // flash / re-setup prompt on every new device install).
+            String? shopId, shopName, shopCode;
+            if (role == UserRole.owner) {
+              try {
+                final shop = await _api.getShopByOwner(userId);
+                if (shop != null) {
+                  shopId = shop['id'] as String?;
+                  shopName = shop['shop_name'] as String?;
+                  shopCode = shop['shop_code'] as String?;
+                }
+              } catch (_) {
+                // Shop lookup failed — fall through; shop-setup screen
+                // has its own guard and will redirect if the shop exists.
+              }
+            }
+
             state = state.copyWith(
               isLoading: false,
               role: role,
               name: existing['name'] as String?,
-              userId: existing['id'] as String,
+              userId: userId,
+              shopId: shopId,
+              shopName: shopName,
+              shopCode: shopCode,
               step: AuthStep.done,
             );
             return;
@@ -226,11 +264,34 @@ class AuthNotifier extends StateNotifier<AuthState> {
         role: role.apiValue,
         name: name,
       );
+      final userId = user['id'] as String;
+
+      // Safety: if an owner somehow already has a shop (e.g. they went
+      // through role-select on a second device after their first device
+      // created the shop without persisting the session properly), fetch
+      // it so navigation goes straight to the dashboard.
+      String? shopId, shopName, shopCode;
+      if (role == UserRole.owner) {
+        try {
+          final shop = await _api.getShopByOwner(userId);
+          if (shop != null) {
+            shopId = shop['id'] as String?;
+            shopName = shop['shop_name'] as String?;
+            shopCode = shop['shop_code'] as String?;
+          }
+        } catch (_) {
+          // Shop lookup failed — shop-setup screen's guard will handle it.
+        }
+      }
+
       state = state.copyWith(
         isLoading: false,
         role: role,
         name: name,
-        userId: user['id'] as String,
+        userId: userId,
+        shopId: shopId,
+        shopName: shopName,
+        shopCode: shopCode,
         step: AuthStep.done,
       );
     } catch (e) {

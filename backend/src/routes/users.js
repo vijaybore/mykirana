@@ -42,5 +42,22 @@ router.get('/by-phone/:phone', async (req, res) => {
   res.json(result.rows[0]);
 });
 
+// POST /users/clean-test-data — clean test data for the predefined whitelisted numbers
+router.post('/clean-test-data', async (req, res) => {
+  const testPhones = [
+    '8956824842',
+    '8805707911',
+    '8805779621',
+    '9923185742',
+    '9511689937',
+  ];
+  try {
+    await pool.cleanTestData(testPhones);
+    res.json({ message: 'Test data cleaned successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to clean test data: ' + err.message });
+  }
+});
+
 module.exports = router;
 
